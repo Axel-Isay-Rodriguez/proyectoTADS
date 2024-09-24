@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registro de Materiales</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Registro de Materiales</h1>
+        </header>
+
+        <form>
+            <div class="material-entry">
+                <h2>Material 1</h2>
+                <div class="input-group">
+                    <label for="partida1">Partida</label>
+                    <input type="text" id="partida1" name="partida1" required>
+                </div>
+                <div class="input-group">
+                    <label for="nombre1">Nombre del Material</label>
+                    <input type="text" id="nombre1" name="nombre1" required>
+                </div>
+                <div class="input-group">
+                    <label for="descripcion1">Descripción</label>
+                    <textarea id="descripcion1" name="descripcion1"></textarea>
+                </div>
+                <div class="input-group">
+                    <label for="cantidad1">Cantidad</label>
+                    <input type="number" id="cantidad1" name="cantidad1" required>
+                </div>
+                <div class="input-group">
+                    <label for="ubicacion1">Ubicación</label>
+                    <input type="text" id="ubicacion1" name="ubicacion1" required>
+                </div>
+            </div>
+
+            <div class="material-entry">
+                <h2>Material 2</h2>
+                <div class="input-group">
+                    <label for="partida2">Partida</label>
+                    <input type="text" id="partida2" name="partida2" required>
+                </div>
+                <div class="input-group">
+                    <label for="nombre2">Nombre del Material</label>
+                    <input type="text" id="nombre2" name="nombre2" required>
+                </div>
+                <div class="input-group">
+                    <label for="descripcion2">Descripción</label>
+                    <textarea id="descripcion2" name="descripcion2"></textarea>
+                </div>
+                <div class="input-group">
+                    <label for="cantidad2">Cantidad</label>
+                    <input type="number" id="cantidad2" name="cantidad2" required>
+                </div>
+                <div class="input-group">
+                    <label for="ubicacion2">Ubicación</label>
+                    <input type="text" id="ubicacion2" name="ubicacion2" required>
+                </div>
+            </div>
+
+            <div class="add-more">
+                <button type="button">Añadir otro material</button>
+            </div>
+
+            <div class="submit-section">
+                <button type="submit">Registrar Materiales</button>
+            </div>
+        </form>
+    </div>
+</body>
+</html>
