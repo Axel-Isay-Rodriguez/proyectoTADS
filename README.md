@@ -1,4 +1,13 @@
 # proyectoTADS
+Vamos a usar Mysql https://dev.mysql.com/downloads/installer/ instalenlo 
+al momento de instalacion hagan un usuario 
+Usuario:tecnologico
+Pass:tecnologico
+
+para que este parejo durante el desarrollo 
+ya esta algo arriba , creo asi que pues ya iremos trabajando 
+primero lo importante es que corra , des pues vemos lo demas
+
 # Pa bajarlo desde el CMD
 Clonar el repositorio
 ```javascript
