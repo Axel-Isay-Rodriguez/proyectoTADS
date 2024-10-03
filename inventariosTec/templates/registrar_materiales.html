@@ -1,0 +1,33 @@
+<!-- inventariosTec/templates/registrar_materiales.html -->
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registrar Materiales</title>
+    <style>
+        body { font-family: Arial, sans-serif; padding: 20px; }
+        .form-group { margin-bottom: 15px; }
+        label { display: block; font-weight: bold; margin-bottom: 5px; }
+        input, textarea { width: 100%; padding: 10px; margin-bottom: 5px; border: 1px solid #ccc; border-radius: 5px; }
+        button { background-color: #1b396a; color: white; padding: 10px 20px; border: none; border-radius: 5px; cursor: pointer; }
+        button:hover { background-color: #162b53; }
+    </style>
+</head>
+<body>
+    <h1>Registrar Múltiples Materiales</h1>
+
+    <form method="POST">
+        {% csrf_token %}
+        <div>
+            {{ formset.management_form }}
+            {% for form in formset %}
+                <div class="form-group">
+                    {{ form.as_p }}
+                </div>
+            {% endfor %}
+        </div>
+        <button type="submit">Registrar Materiales</button>
+    </form>
+</body>
+</html>

@@ -1,0 +1,42 @@
+<!-- inventariosTec/templates/home.html -->
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bienvenido</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+            text-align: center;
+        }
+        h1 {
+            color: #1b396a;
+        }
+        p {
+            margin-bottom: 20px;
+        }
+        .button {
+            background-color: #1b396a;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            text-decoration: none; 
+            font-size: 16px;
+        }
+        .button:hover {
+            background-color: #162b53;
+        }
+    </style>
+</head>
+<body>
+    <h1>Bienvenido al sistema de inventario</h1>
+    <p>Selecciona una opción del menú para continuar.</p>
+
+    <!-- Botón para redirigir a Registrar Materiales -->
+    <a href="{% url 'registrar_materiales' %}" class="button">Registrar Material</a>
+</body>
+</html>
