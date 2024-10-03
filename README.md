@@ -1,8 +1,11 @@
 # proyectoTADS
 Vamos a usar Mysql https://dev.mysql.com/downloads/installer/ instalenlo 
 al momento de instalacion hagan un usuario 
-Usuario:tecnologico
+Usuario:tec
 Pass:tecnologico
+para crear la base de datos 
+
+CREATE DATABASE tecInv CHARACTER SET UTF8; 
 
 para que este parejo durante el desarrollo 
 ya esta algo arriba , creo asi que pues ya iremos trabajando 
