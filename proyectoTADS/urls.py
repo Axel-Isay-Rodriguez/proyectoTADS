@@ -17,6 +17,7 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, include
 from django.http import HttpResponse
+from inventariosTec import views
 
 def home(request):
     return HttpResponse("Bienvenido al sistema de inventario") 
@@ -24,7 +25,7 @@ def home(request):
 urlpatterns = [
     path('admin/', admin.site.urls),
      path('inventariosTec/', include('inventariosTec.urls')),  # Incluye las rutas de la app 'inventariosTec',
-      path('', home)
+     path('', views.home, name='home'), 
 ]
 
 
