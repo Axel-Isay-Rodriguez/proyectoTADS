@@ -28,7 +28,7 @@ Antes de trabajar se tiene que traer los cambios del repositorio remoto
 git pull origin main
 ```
 > [!IMPORTANT]  
-> Es nesesario usar los comandos
+> Es nesesario usar los comandos antes de ejecutar el server , porque se estan ajustando los modelos aun
 > ```javascript
 > python manage.py makemigrations
 > ```
