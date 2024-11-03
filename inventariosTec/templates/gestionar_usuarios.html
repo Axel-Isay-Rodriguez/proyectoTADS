@@ -1,0 +1,61 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h2>Gestión de Usuarios y Grupos</h2>
+
+<!-- Formulario de búsqueda -->
+<form method="get" action="{% url 'gestionar_usuarios' %}">
+    <input type="text" name="q" placeholder="Buscar usuarios..." value="{{ request.GET.q }}">
+    <button type="submit">Buscar</button>
+</form>
+
+{% if messages %}
+    <ul>
+        {% for message in messages %}
+            <li>{{ message }}</li>
+        {% endfor %}
+    </ul>
+{% endif %}
+
+<table border="1">
+    <thead>
+        <tr>
+            <th><a href="?sort=username">Nombre de Usuario</a></th>
+            <th><a href="?sort=email">Email</a></th>
+            <th>Grupo Actual</th>
+            <th>Asignar Nuevo Grupo</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for usuario in usuarios %}
+            <tr>
+                <td>{{ usuario.username }}</td>
+                <td>{{ usuario.email }}</td>
+                <td>
+                    {% if usuario.groups.all %}
+                        {% for grupo in usuario.groups.all %}
+                            {{ grupo.name }}{% if not forloop.last %}, {% endif %}
+                        {% endfor %}
+                    {% else %}
+                        Sin grupo
+                    {% endif %}
+                </td>
+                <td>
+                    <form method="post" action="{% url 'gestionar_usuarios' %}">
+                        {% csrf_token %}
+                        <input type="hidden" name="usuario_id" value="{{ usuario.id }}">
+                        <select name="grupo_id" required>
+                            <option value="">Seleccionar grupo...</option>
+                            {% for grupo in grupos %}
+                                <option value="{{ grupo.id }}">{{ grupo.name }}</option>
+                            {% endfor %}
+                        </select>
+                        <button type="submit">Actualizar Grupo</button>
+                    </form>
+                </td>
+            </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+{% endblock %}

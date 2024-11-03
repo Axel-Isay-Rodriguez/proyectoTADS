@@ -27,6 +27,11 @@ DEBUG = True
 
 ALLOWED_HOSTS = []
 
+LOGIN_REDIRECT_URL = 'home' 
+LOGOUT_REDIRECT_URL = 'login'  
+LOGIN_URL = 'login' 
+SESSION_EXPIRE_AT_BROWSER_CLOSE = True
+SESSION_COOKIE_AGE = 3000  # Expira después de 50 minutos de inactividad (3000 segundos)
 
 # Application definition
 
@@ -58,11 +63,12 @@ TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
         'DIRS':  [
-            BASE_DIR / 'templates',  # Directorio global para plantillas (si lo necesitas)
+            BASE_DIR / 'templates',  
         ],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
+                'inventariosTec.context_processors.grupos_usuario',
                 'django.template.context_processors.debug',
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',

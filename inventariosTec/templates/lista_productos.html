@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h2>Lista de Productos</h2>
+
+<table border="1">
+    <thead>
+        <tr>
+            <th>Nombre</th>
+            <th>Descripción</th>
+            <th>Categoría</th>
+            <th>Unidad de Medida</th>
+            <th>Cantidad Disponible</th>
+            <th>Estado</th>
+            <th>Acciones</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for producto in productos %}
+        <tr>
+            <td>{{ producto.nombre }}</td>
+            <td>{{ producto.descripcion }}</td>
+            <td>{{ producto.categoria.nombre }}</td>
+            <td>{{ producto.unidad_medida.nombre }}</td>
+            <td>{{ producto.cantidad_disponible }}</td>
+            <td>{{ producto.get_estado_display }}</td>
+            <td>
+                <a href="{% url 'editar_producto' producto.id %}" class="button">Modificar</a>
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+<!-- Botón para agregar un nuevo producto -->
+<a href="{% url 'gestionar_producto' %}" class="button">Agregar Nuevo Producto</a>
+
+{% endblock %}

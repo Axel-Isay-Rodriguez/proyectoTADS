@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Mi Aplicación{% endblock %}</title>
+</head>
+<body>
+    <!-- Mostrar Header dependiendo del tipo de usuario -->
+    {% if user.is_authenticated %}
+        {% if 'Administrador' in user_groups %}
+            <!-- Header para Administrador -->
+            <header>
+                <h1>Bienvenido Administrador</h1>
+                <nav>
+                    <a href="{% url 'admin_dashboard' %}">Dashboard Admin</a>
+                    <a href="{% url 'lista_productos' %}">Gestionar Productos</a>
+                    <a href="{% url 'gestionar_usuarios' %}">Gestionar Usuarios</a>
+                    <form method="post" action="{% url 'logout' %}">
+                        {% csrf_token %}
+                        <button type="submit">Cerrar sesión</button>
+                    </form>
+                </nav>
+            </header>
+        {% elif 'Operador' in user_groups %}
+            <!-- Header para Operador -->
+            <header>
+                <h1>Bienvenido Operador</h1>
+                <nav>
+                    <a href="{% url 'operador_dashboard' %}">Dashboard Operador</a>
+                    <a href="{% url 'lista_productos' %}">Ver Productos</a>
+                    <form method="post" action="{% url 'logout' %}">
+                        {% csrf_token %}
+                        <button type="submit">Cerrar sesión</button>
+                    </form>
+                </nav>
+            </header>
+        {% elif 'Usuario Avanzado' in user_groups %}
+            <!-- Header para Usuario Avanzado -->
+            <header>
+                <h1>Bienvenido Usuario Avanzado</h1>
+                <nav>
+                    <a href="{% url 'mis_ordenes_trabajo' %}">Mis Órdenes de Trabajo</a>
+                    <a href="{% url 'mis_prestamos' %}">Mis Préstamos</a>
+                    <form method="post" action="{% url 'logout' %}">
+                        {% csrf_token %}
+                        <button type="submit">Cerrar sesión</button>
+                    </form>
+                </nav>
+            </header>
+        {% elif 'Usuario Básico' in user_groups %}
+            <!-- Header para Usuario Básico -->
+            <header>
+                <h1>Bienvenido Usuario Básico</h1>
+                <nav>
+                    <a href="{% url 'mis_prestamos' %}">Mis Préstamos Pendientes</a>
+                    <form method="post" action="{% url 'logout' %}">
+                        {% csrf_token %}
+                        <button type="submit">Cerrar sesión</button>
+                    </form>
+                </nav>
+            </header>
+        {% else %}
+            <!-- Header por Defecto para Usuario sin Grupo -->
+            <header>
+                <h1>Bienvenido</h1>
+                <nav>
+                    <form method="post" action="{% url 'logout' %}">
+                        {% csrf_token %}
+                        <button type="submit">Cerrar sesión</button>
+                    </form>
+                </nav>
+            </header>
+        {% endif %}
+    {% else %}
+        <!-- Header para Usuario No Autenticado -->
+        <header>
+            <h1>Bienvenido a Mi Aplicación</h1>
+            <nav>
+                <a href="{% url 'login' %}">Iniciar sesión</a>
+                <a href="{% url 'register' %}">Registrar cuenta</a>
+            </nav>
+        </header>
+    {% endif %}
+
+    <!-- Mensajes y Contenido Principal -->
+    {% if messages %}
+        <ul>
+            {% for message in messages %}
+                <li>{{ message }}</li>
+            {% endfor %}
+        </ul>
+    {% endif %}
+
+    <!-- Bloque de contenido principal -->
+    {% block content %}{% endblock %}
+
+</body>
+</html>

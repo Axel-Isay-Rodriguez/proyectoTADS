@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h2>{% if producto_form.instance.pk %}Modificar Producto{% else %}Agregar Producto{% endif %}</h2>
+
+<!-- Formulario para Producto -->
+<form method="post">
+    {% csrf_token %}
+    {{ producto_form.as_p }}
+    <button type="submit" name="guardar_producto">Guardar Producto</button>
+</form>
+
+<!-- Formularios Modales para Crear Partida, Categoria, etc. -->
+<h3>Agregar Nuevas Opciones Relacionadas</h3>
+
+<!-- Formulario para Partida -->
+<form method="post" action="">
+    {% csrf_token %}
+    <fieldset>
+        <legend>Agregar Partida</legend>
+        {{ partida_form.as_p }}
+        <button type="submit" name="guardar_partida">Agregar Partida</button>
+    </fieldset>
+</form>
+
+<!-- Formulario para Categoría -->
+<form method="post" action="">
+    {% csrf_token %}
+    <fieldset>
+        <legend>Agregar Categoría</legend>
+        {{ categoria_form.as_p }}
+        <button type="submit" name="guardar_categoria">Agregar Categoría</button>
+    </fieldset>
+</form>
+
+<!-- Formulario para Unidad de Medida -->
+<form method="post" action="">
+    {% csrf_token %}
+    <fieldset>
+        <legend>Agregar Unidad de Medida</legend>
+        {{ unidad_medida_form.as_p }}
+        <button type="submit" name="guardar_unidad_medida">Agregar Unidad de Medida</button>
+    </fieldset>
+</form>
+
+{% endblock %}
