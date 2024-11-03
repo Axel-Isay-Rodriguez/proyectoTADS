@@ -27,6 +27,14 @@ Antes de trabajar se tiene que traer los cambios del repositorio remoto
 ```javascript
 git pull origin main
 ```
+> [!IMPORTANT]  
+> Es nesesario usar los comandos
+> ```javascript
+> python manage.py makemigrations
+> ```
+> ```javascript
+> python manage.py migrate
+> ```
 
 # Pa subirlo
 Cambiar al directorio del proyecto 
