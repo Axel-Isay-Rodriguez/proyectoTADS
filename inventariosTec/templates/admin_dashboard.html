@@ -6,12 +6,17 @@
 <p>Bienvenido al panel de administrador. Aquí puedes gestionar usuarios, permisos y ver información general de la aplicación.</p>
 
 <!-- Enlace para gestionar usuarios -->
-<a href="{% url 'gestionar_usuarios' %}" class="button">Gestionar Usuarios y Grupos</a>
+<form method="get" action="{% url 'gestionar_usuarios' %}">
+    <button type="submit" class="admin-button">Gestionar Usuarios y Grupos</button>
+</form>
 
-<a href="{% url 'gestionar_producto' %}" class="button">Agregar o Modificar Productos</a> 
+<form method="get" action="{% url 'gestionar_producto' %}">
+    <button type="submit" class="admin-button">Agregar o Modificar Productos</button>
+</form>
 
-<a href="{% url 'lista_productos' %}" class="button">Lista de Productos</a>
-
+<form method="get" action="{% url 'lista_productos' %}">
+    <button type="submit" class="admin-button">Lista de Productos</button>
+</form>
 
 <!-- Otras funcionalidades del administrador -->
 {% endblock %}

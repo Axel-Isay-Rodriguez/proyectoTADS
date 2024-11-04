@@ -1,9 +1,11 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
+    {% load static %}
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %}Mi Aplicación{% endblock %}</title>
+    <link rel="stylesheet" type="text/css" href="{% static 'inventariosTec/css/styles.css' %}">
 </head>
 <body>
     <!-- Mostrar Header dependiendo del tipo de usuario -->
@@ -11,11 +13,21 @@
         {% if 'Administrador' in user_groups %}
             <!-- Header para Administrador -->
             <header>
+                <div class="header-left">
+                    <img src="{% static 'inventariosTec/img/tecnm_logo.png' %}" alt="Logo" class="logo">
+                    
+                </div>
                 <h1>Bienvenido Administrador</h1>
                 <nav>
-                    <a href="{% url 'admin_dashboard' %}">Dashboard Admin</a>
-                    <a href="{% url 'lista_productos' %}">Gestionar Productos</a>
-                    <a href="{% url 'gestionar_usuarios' %}">Gestionar Usuarios</a>
+                    <form method="get" action="{% url 'admin_dashboard' %}">
+                        <button type="submit">Dashboard Admin</button>
+                    </form>
+                    <form method="get" action="{% url 'lista_productos' %}">
+                        <button type="submit">Gestionar Productos</button>
+                    </form>
+                    <form method="get" action="{% url 'gestionar_usuarios' %}">
+                        <button type="submit">Gestionar Usuarios</button>
+                    </form>
                     <form method="post" action="{% url 'logout' %}">
                         {% csrf_token %}
                         <button type="submit">Cerrar sesión</button>
@@ -27,8 +39,12 @@
             <header>
                 <h1>Bienvenido Operador</h1>
                 <nav>
-                    <a href="{% url 'operador_dashboard' %}">Dashboard Operador</a>
-                    <a href="{% url 'lista_productos' %}">Ver Productos</a>
+                    <form method="get" action="{% url 'operador_dashboard' %}">
+                        <button type="submit">Dashboard Operador</button>
+                    </form>
+                    <form method="get" action="{% url 'lista_productos' %}">
+                        <button type="submit">Ver Productos</button>
+                    </form>
                     <form method="post" action="{% url 'logout' %}">
                         {% csrf_token %}
                         <button type="submit">Cerrar sesión</button>
@@ -40,8 +56,12 @@
             <header>
                 <h1>Bienvenido Usuario Avanzado</h1>
                 <nav>
-                    <a href="{% url 'mis_ordenes_trabajo' %}">Mis Órdenes de Trabajo</a>
-                    <a href="{% url 'mis_prestamos' %}">Mis Préstamos</a>
+                    <form method="get" action="{% url 'mis_ordenes_trabajo' %}">
+                        <button type="submit">Mis Órdenes de Trabajo</button>
+                    </form>
+                    <form method="get" action="{% url 'mis_prestamos' %}">
+                        <button type="submit">Mis Préstamos</button>
+                    </form>
                     <form method="post" action="{% url 'logout' %}">
                         {% csrf_token %}
                         <button type="submit">Cerrar sesión</button>
@@ -53,7 +73,9 @@
             <header>
                 <h1>Bienvenido Usuario Básico</h1>
                 <nav>
-                    <a href="{% url 'mis_prestamos' %}">Mis Préstamos Pendientes</a>
+                    <form method="get" action="{% url 'mis_prestamos' %}">
+                        <button type="submit">Mis Préstamos Pendientes</button>
+                    </form>
                     <form method="post" action="{% url 'logout' %}">
                         {% csrf_token %}
                         <button type="submit">Cerrar sesión</button>
@@ -77,8 +99,12 @@
         <header>
             <h1>Bienvenido a Mi Aplicación</h1>
             <nav>
-                <a href="{% url 'login' %}">Iniciar sesión</a>
-                <a href="{% url 'register' %}">Registrar cuenta</a>
+                <form method="get" action="{% url 'login' %}">
+                    <button type="submit">Iniciar sesión</button>
+                </form>
+                <form method="get" action="{% url 'register' %}">
+                    <button type="submit">Registrar cuenta</button>
+                </form>
             </nav>
         </header>
     {% endif %}

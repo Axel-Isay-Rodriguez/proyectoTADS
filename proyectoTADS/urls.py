@@ -18,14 +18,14 @@ from django.contrib import admin
 from django.urls import path, include
 from django.http import HttpResponse
 from inventariosTec import views
-from django.urls import path, include
 from django.contrib import admin
-from django.urls import path, include
+
+from django.views.generic import RedirectView
 def home(request):
     return HttpResponse("Bienvenido al sistema de inventario") 
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('inventariosTec/', include('inventariosTec.urls')),  # Incluye las URLs de la aplicación
-   # path('login/', include('inventariosTec.urls')),           # Asegúrate de tener la ruta de login aquí
+    path('', RedirectView.as_view(url='/inventariosTec/', permanent=True)),         # Asegúrate de tener la ruta de login aquí
 ]

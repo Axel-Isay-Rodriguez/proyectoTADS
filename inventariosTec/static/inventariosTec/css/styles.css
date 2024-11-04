@@ -1,0 +1,143 @@
+/* styles.css */
+
+body {
+    background-color: #ffffff;  /* Fondo blanco */
+    color: #1b396a;  /* Texto en azul oscuro */
+    font-family: Arial, sans-serif;
+}
+
+header, footer {
+    background-color: #1b396a;  /* Fondo del header y footer en azul oscuro */
+    color: #ffffff;  /* Texto en blanco */
+    padding: 10px;
+    text-align: center;
+}
+
+a {
+    color: #1b396a;  /* Enlaces en azul oscuro */
+    text-decoration: none;
+}
+
+a:hover {
+    text-decoration: underline;
+}
+
+.btn {
+    background-color: #1b396a;  /* Botones en azul oscuro */
+    color: #ffffff;  /* Texto de los botones en blanco */
+    padding: 10px 15px;
+    border: none;
+    cursor: pointer;
+    border-radius: 5px;
+}
+
+.btn:hover {
+    background-color: #14274e;  /* Un azul más oscuro al pasar el ratón */
+}
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+table, th, td {
+    border: 1px solid #1b396a;
+}
+
+th {
+    background-color: #1b396a;
+    color: #ffffff;
+    padding: 10px;
+}
+
+td {
+    padding: 10px;
+    text-align: center;
+}
+
+input, select {
+    padding: 10px;
+    margin: 5px 0;
+    border: 1px solid #1b396a;
+    border-radius: 5px;
+    width: 100%;
+}
+
+form {
+    background-color: #f9f9f9;
+    padding: 2px;
+    border-radius: 10px;
+    border: 1px solid #1b396a;
+}
+
+nav {
+    display: flex;
+    justify-content: flex-end;  /* Alinea el contenido a la derecha */
+    gap: 15px;  /* Espacio entre los elementos */
+    margin-bottom: 20px;
+}
+
+form {
+    display: inline;  /* Mantiene los formularios alineados horizontalmente */
+}
+
+button {
+    background-color: #1b396a;  /* Azul oscuro */
+    color: #ffffff;  /* Texto blanco */
+    border: none;
+    padding: 10px 10px;
+    font-size: 1em;
+    cursor: pointer;
+    border-radius: 5px;
+    transition: background-color 0.3s;
+}
+
+button:hover {
+    background-color: #14274e;  /* Azul aún más oscuro al pasar el ratón */
+}
+
+button:focus {
+    outline: none;
+    box-shadow: 0 0 5px #1b396a;  /* Pequeño efecto para el foco */
+}
+.header-left {
+    display: flex;
+    align-items: center;
+}
+.logo {
+    height: 50px;  /* Ajusta la altura de la imagen según sea necesario */
+    margin-right: 20px;
+}
+.nav-buttons {
+    display: flex;
+    gap: 15px;
+}
+
+.admin-button {
+    background-color: #ffffff;  /* Fondo blanco para contrastar */
+    color: #1b396a;  /* Texto en azul oscuro */
+    border: 2px solid #1b396a;  /* Borde azul oscuro */
+    padding: 10px 25px;  /* Tamaño cómodo */
+    font-size: 1em;
+    cursor: pointer;
+    border-radius: 5px;
+    margin: 10px 0;  /* Espacio entre botones */
+    transition: background-color 0.3s, color 0.3s, transform 0.3s;
+}
+
+.admin-button:hover {
+    background-color: #1b396a;  /* Azul oscuro al pasar el ratón */
+    color: #ffffff;  /* Texto blanco para más contraste */
+    transform: scale(1.05);  /* Pequeño efecto de escalado al pasar el ratón */
+}
+
+.admin-button:focus {
+    outline: none;
+    box-shadow: 0 0 5px #1b396a;  /* Sombra para indicar foco */
+}
