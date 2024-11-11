@@ -8,7 +8,7 @@ from django.db.models import Q
 from django.utils.decorators import decorator_from_middleware
 from django.utils.cache import add_never_cache_headers
 from django.middleware.cache import MiddlewareMixin
-from .forms import ProductoForm, PartidaForm, CategoriaForm, UnidadMedidaForm
+from .factories import FormFactory  # Importa FormFactory
 from .models import Producto
 from django.contrib.auth.models import Group
 from django.db import models
@@ -19,15 +19,15 @@ class NoCacheMiddleware(MiddlewareMixin):
         add_never_cache_headers(response)
         return response
 
-no_cache = decorator_from_middleware(NoCacheMiddleware) 
-
+no_cache = decorator_from_middleware(NoCacheMiddleware)
 
 def grupos_usuario(request):
     if request.user.is_authenticated:
         grupos = request.user.groups.values_list('name', flat=True)
     else:
         grupos = []
-    return {'user_groups': grupos} 
+    return {'user_groups': grupos}
+
 # Formulario de registro
 class RegistroForm(forms.ModelForm):
     password = forms.CharField(widget=forms.PasswordInput)
@@ -60,14 +60,13 @@ def register_view(request):
             # Autenticar y redirigir al usuario
             login(request, user)
             messages.success(request, "Registro exitoso. Bienvenido!")
-            return redirect('home')  # Redirige a la página principal o a la página que desees
+            return redirect('home')
     else:
         form = RegistroForm()
     return render(request, 'register.html', {'form': form})
+
 def home(request):
     return render(request, 'home.html')
-
-
 
 def login_view(request):
     if request.method == 'POST':
@@ -76,7 +75,6 @@ def login_view(request):
         user = authenticate(request, username=username, password=password)
         if user is not None:
             login(request, user)
-            # Redirigir según el grupo del usuario
             if user.groups.filter(name='Administrador').exists():
                 return redirect('admin_dashboard')
             elif user.groups.filter(name='Operador').exists():
@@ -86,7 +84,6 @@ def login_view(request):
             elif user.groups.filter(name='Usuario Básico').exists():
                 return redirect('usuario_basico_dashboard')
             else:
-                # Si el usuario no pertenece a ningún grupo
                 return redirect('no_autorizado')
         else:
             messages.error(request, "Nombre de usuario o contraseña incorrectos.")
@@ -94,13 +91,8 @@ def login_view(request):
 
 def home_view(request):
     user_groups = request.user.groups.values_list('name', flat=True) if request.user.is_authenticated else []
-    
-    context = {
-        'user_groups': user_groups
-    }
-    
-    return render(request, 'home.html', context) # Asegúrate de tener un archivo home.html en tu carpeta de plantillas
-
+    context = {'user_groups': user_groups}
+    return render(request, 'home.html', context)
 
 def es_administrador(user):
     return user.groups.filter(name='Administrador').exists()
@@ -108,74 +100,29 @@ def es_administrador(user):
 def es_operador(user):
     return user.groups.filter(name='Operador').exists()
 
-@user_passes_test(es_administrador)
-def admin_dashboard(request):
-    return render(request, 'admin_dashboard.html')  # Vista solo para administradores
-
-@user_passes_test(es_operador)
-def operador_dashboard(request):
-    return render(request, 'operador_dashboard.html')  # Vista solo para operadores
-
-
-@user_passes_test(es_administrador, login_url='no_autorizado')
-def admin_dashboard(request):
-    return render(request, 'admin_dashboard.html')
-
-# Otros decoradores según el grupo que desees verificar
 def es_usuario_avanzado(user):
     return user.groups.filter(name='Usuario Avanzado').exists()
 
-# Vista para el panel del usuario avanzado
+def es_usuario_basico(user):
+    return user.groups.filter(name='Usuario Básico').exists()
+
+@user_passes_test(es_administrador)
+def admin_dashboard(request):
+    return render(request, 'admin_dashboard.html')
+
+@user_passes_test(es_operador)
+def operador_dashboard(request):
+    return render(request, 'operador_dashboard.html')
+
 @login_required
 @user_passes_test(es_usuario_avanzado)
 def usuario_avanzado_dashboard(request):
     return render(request, 'usuario_avanzado_dashboard.html')
 
-def es_usuario_basico(user):
-    return user.groups.filter(name='Usuario Básico').exists()
-
-# Vista para el panel del usuario básico
 @login_required
 @user_passes_test(es_usuario_basico)
 def usuario_basico_dashboard(request):
     return render(request, 'usuario_basico_dashboard.html')
-
-def no_autorizado(request):
-    return render(request, 'no_autorizado.html')
-
-from django.contrib.auth.decorators import login_required
-
-@login_required
-def admin_dashboard(request):
-    return render(request, 'admin_dashboard.html')
-
-@login_required
-def operador_dashboard(request):
-    return render(request, 'operador_dashboard.html')
-
-@login_required
-def usuario_avanzado_dashboard(request):
-    return render(request, 'usuario_avanzado_dashboard.html')
-
-@login_required
-def usuario_basico_dashboard(request):
-    return render(request, 'usuario_basico_dashboard.html')
-
-def es_administrador(user):
-    return user.groups.filter(name='Administrador').exists()
-
-@login_required
-@user_passes_test(es_administrador)
-def admin_dashboard(request):
-    # Obtener usuarios sin grupo asignado
-    usuarios_sin_grupo = User.objects.filter(groups__isnull=True)
-    
-    return render(request, 'admin_dashboard.html', {
-        'usuarios_sin_grupo': usuarios_sin_grupo
-    })
-
-def es_administrador(user):
-    return user.groups.filter(name='Administrador').exists()
 
 @login_required
 @user_passes_test(es_administrador)
@@ -191,116 +138,52 @@ def gestionar_usuarios(request):
         usuario = get_object_or_404(User, id=usuario_id)
         grupo = get_object_or_404(Group, id=grupo_id)
 
-        # Asigna el grupo seleccionado al usuario (puedes limpiar los grupos existentes si quieres que solo tenga uno)
-        usuario.groups.clear()  # Elimina todos los grupos del usuario antes de asignar el nuevo
+        usuario.groups.clear()
         usuario.groups.add(grupo)
 
         messages.success(request, f'Grupo actualizado para {usuario.username}')
         return redirect('gestionar_usuarios')
 
     return render(request, 'gestionar_usuarios.html', {'usuarios': usuarios, 'grupos': grupos})
-
-@no_cache
-def gestionar_usuarios(request):
-    grupos = Group.objects.all()
-    query = request.GET.get('q')  # Captura el término de búsqueda
-    sort = request.GET.get('sort')  # Captura el criterio de ordenación
-
-    # Búsqueda de usuarios
-    if query:
-        usuarios = User.objects.filter(
-            Q(username__icontains=query) | Q(email__icontains=query)
-        )
-    else:
-        usuarios = User.objects.all()
-
-    # Ordenar usuarios si se ha seleccionado un criterio de ordenación
-    if sort in ['username', 'email']:
-        usuarios = usuarios.order_by(sort)
-
-    if request.method == 'POST':
-        usuario_id = request.POST.get('usuario_id')
-        grupo_id = request.POST.get('grupo_id')
-
-        usuario = get_object_or_404(User, id=usuario_id)
-        grupo = get_object_or_404(Group, id=grupo_id)
-
-        # Asignar grupo al usuario
-        usuario.groups.clear()  # Elimina los grupos existentes
-        usuario.groups.add(grupo)
-
-        messages.success(request, f'Grupo actualizado para {usuario.username}')
-        return redirect('gestionar_usuarios')
-
-    return render(request, 'gestionar_usuarios.html', {'usuarios': usuarios, 'grupos': grupos})
-
-def es_administrador(user):
-    return user.groups.filter(name='Administrador').exists()
 
 @login_required
 @user_passes_test(es_administrador)
 @no_cache
-def gestionar_usuarios(request):
-    grupos = Group.objects.all()
-    query = request.GET.get('q')  # Captura el término de búsqueda desde el formulario
-
-    if query:
-        usuarios = User.objects.filter(
-            Q(username__icontains=query) | Q(email__icontains=query)
-        )
-    else:
-        usuarios = User.objects.all()
-
-    if request.method == 'POST':
-        usuario_id = request.POST.get('usuario_id')
-        grupo_id = request.POST.get('grupo_id')
-
-        usuario = get_object_or_404(User, id=usuario_id)
-        grupo = get_object_or_404(Group, id=grupo_id)
-
-        # Asigna el grupo seleccionado al usuario
-        usuario.groups.clear()  # Elimina todos los grupos del usuario antes de asignar el nuevo
-        usuario.groups.add(grupo)
-
-        messages.success(request, f'Grupo actualizado para {usuario.username}')
-        return redirect('gestionar_usuarios')
-
-    return render(request, 'gestionar_usuarios.html', {'usuarios': usuarios, 'grupos': grupos})
-@login_required
-@user_passes_test(es_administrador)
 def gestionar_producto(request, producto_id=None):
     producto = get_object_or_404(Producto, id=producto_id) if producto_id else None
 
-    # Inicializa todos los formularios para que estén listos para usar en la plantilla
-    producto_form = ProductoForm(instance=producto)
-    partida_form = PartidaForm()
-    categoria_form = CategoriaForm()
-    unidad_medida_form = UnidadMedidaForm()
+    # Crear formularios usando el FormFactory
+    producto_form = FormFactory.create_form('producto', instance=producto)
+    partida_form = FormFactory.create_form('partida')
+    categoria_form = FormFactory.create_form('categoria')
+    unidad_medida_form = FormFactory.create_form('unidad_medida')
 
     if request.method == 'POST':
-        # Identifica cuál formulario se está enviando por el nombre del botón
         if 'guardar_producto' in request.POST:
-            producto_form = ProductoForm(request.POST, instance=producto)
+            producto_form = FormFactory.create_form('producto', request.POST, instance=producto)
             if producto_form.is_valid():
                 producto_form.save()
-                return redirect('gestionar_producto')  # Redirige después de guardar el producto para evitar reenvío duplicado
+                messages.success(request, "Producto guardado exitosamente.")
+                return redirect('gestionar_producto')
 
         elif 'guardar_partida' in request.POST:
-            partida_form = PartidaForm(request.POST)
+            partida_form = FormFactory.create_form('partida', request.POST)
             if partida_form.is_valid():
                 partida_form.save()
+                messages.success(request, "Partida guardada exitosamente.")
 
         elif 'guardar_categoria' in request.POST:
-            categoria_form = CategoriaForm(request.POST)
+            categoria_form = FormFactory.create_form('categoria', request.POST)
             if categoria_form.is_valid():
                 categoria_form.save()
+                messages.success(request, "Categoría guardada exitosamente.")
 
         elif 'guardar_unidad_medida' in request.POST:
-            unidad_medida_form = UnidadMedidaForm(request.POST)
+            unidad_medida_form = FormFactory.create_form('unidad_medida', request.POST)
             if unidad_medida_form.is_valid():
                 unidad_medida_form.save()
+                messages.success(request, "Unidad de medida guardada exitosamente.")
 
-    # Renderiza los formularios con el contexto adecuado
     context = {
         'producto_form': producto_form,
         'partida_form': partida_form,
@@ -314,4 +197,6 @@ def lista_productos(request):
     productos = Producto.objects.all()
     return render(request, 'lista_productos.html', {'productos': productos})
 
-
+# Vista para acceso denegado
+def no_autorizado(request):
+    return render(request, 'no_autorizado.html')
