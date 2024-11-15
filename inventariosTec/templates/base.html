@@ -1,125 +1,103 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    {% load static %}
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %}Mi Aplicación{% endblock %}</title>
-    <link rel="stylesheet" type="text/css" href="{% static 'inventariosTec/css/styles.css' %}">
+
+    <!-- Bootstrap CSS local -->
+    <link rel="stylesheet" href="{% static 'inventariosTec/css/bootstrap.min.css' %}">
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.8.1/font/bootstrap-icons.min.css">
+    <!-- Tu archivo CSS personalizado -->
+    <link rel="stylesheet" href="{% static 'inventariosTec/css/styles.css' %}">
 </head>
 <body>
-    <!-- Mostrar Header dependiendo del tipo de usuario -->
-    {% if user.is_authenticated %}
-        {% if 'Administrador' in user_groups %}
-            <!-- Header para Administrador -->
-            <header>
-                <div class="header-left">
-                    <img src="{% static 'inventariosTec/img/tecnm_logo.png' %}" alt="Logo" class="logo">
-                    
-                </div>
-                <h1>Bienvenido Administrador</h1>
-                <nav>
-                    <form method="get" action="{% url 'admin_dashboard' %}">
-                        <button type="submit">Dashboard Admin</button>
-                    </form>
-                    <form method="get" action="{% url 'lista_productos' %}">
-                        <button type="submit">Gestionar Productos</button>
-                    </form>
-                    <form method="get" action="{% url 'gestionar_usuarios' %}">
-                        <button type="submit">Gestionar Usuarios</button>
-                    </form>
-                    <form method="post" action="{% url 'logout' %}">
+
+    <!-- Header Principal -->
+    <header class="bg-primary text-white py-3">
+        <div class="container d-flex justify-content-between align-items-center">
+            <div class="d-flex align-items-center">
+                <img src="{% static 'inventariosTec/img/tecnm_logo.png' %}" alt="Logo" class="logo mr-3" style="height: 50px;">
+                <h1 class="h5 mb-0">
+                    {% if user.is_authenticated %}
+                        Bienvenido {% if 'Administrador' in user_groups %}Administrador
+                        {% elif 'Operador' in user_groups %}Operador
+                        {% elif 'Usuario Avanzado' in user_groups %}Usuario Avanzado
+                        {% elif 'Usuario Básico' in user_groups %}Usuario Básico
+                        {% endif %}
+                    {% else %}
+                        Bienvenido a Mi Aplicación
+                    {% endif %}
+                </h1>
+            </div>
+            <nav class="d-flex">
+                {% if user.is_authenticated %}
+                    {% if 'Administrador' in user_groups %}
+                        <a href="{% url 'admin_dashboard' %}" class="btn btn-light btn-sm mr-2">Dashboard Admin</a>
+                        <a href="{% url 'lista_productos' %}" class="btn btn-light btn-sm mr-2">Gestionar Productos</a>
+                        <a href="{% url 'gestionar_usuarios' %}" class="btn btn-light btn-sm mr-2">Gestionar Usuarios</a>
+                    {% elif 'Operador' in user_groups %}
+                        <a href="{% url 'operador_dashboard' %}" class="btn btn-light btn-sm mr-2">Dashboard Operador</a>
+                        <a href="{% url 'lista_productos' %}" class="btn btn-light btn-sm mr-2">Ver Productos</a>
+                    {% elif 'Usuario Avanzado' in user_groups %}
+                        <a href="{% url 'mis_ordenes_trabajo' %}" class="btn btn-light btn-sm mr-2">Mis Órdenes de Trabajo</a>
+                        <a href="{% url 'mis_prestamos' %}" class="btn btn-light btn-sm mr-2">Mis Préstamos</a>
+                    {% elif 'Usuario Básico' in user_groups %}
+                        <a href="{% url 'mis_prestamos' %}" class="btn btn-light btn-sm mr-2">Mis Préstamos Pendientes</a>
+                    {% endif %}
+                    <form method="post" action="{% url 'logout' %}" class="d-inline">
                         {% csrf_token %}
-                        <button type="submit">Cerrar sesión</button>
+                        <button type="submit" class="btn btn-danger btn-sm">Cerrar sesión</button>
                     </form>
-                </nav>
-            </header>
-        {% elif 'Operador' in user_groups %}
-            <!-- Header para Operador -->
-            <header>
-                <h1>Bienvenido Operador</h1>
-                <nav>
-                    <form method="get" action="{% url 'operador_dashboard' %}">
-                        <button type="submit">Dashboard Operador</button>
-                    </form>
-                    <form method="get" action="{% url 'lista_productos' %}">
-                        <button type="submit">Ver Productos</button>
-                    </form>
-                    <form method="post" action="{% url 'logout' %}">
-                        {% csrf_token %}
-                        <button type="submit">Cerrar sesión</button>
-                    </form>
-                </nav>
-            </header>
-        {% elif 'Usuario Avanzado' in user_groups %}
-            <!-- Header para Usuario Avanzado -->
-            <header>
-                <h1>Bienvenido Usuario Avanzado</h1>
-                <nav>
-                    <form method="get" action="{% url 'mis_ordenes_trabajo' %}">
-                        <button type="submit">Mis Órdenes de Trabajo</button>
-                    </form>
-                    <form method="get" action="{% url 'mis_prestamos' %}">
-                        <button type="submit">Mis Préstamos</button>
-                    </form>
-                    <form method="post" action="{% url 'logout' %}">
-                        {% csrf_token %}
-                        <button type="submit">Cerrar sesión</button>
-                    </form>
-                </nav>
-            </header>
-        {% elif 'Usuario Básico' in user_groups %}
-            <!-- Header para Usuario Básico -->
-            <header>
-                <h1>Bienvenido Usuario Básico</h1>
-                <nav>
-                    <form method="get" action="{% url 'mis_prestamos' %}">
-                        <button type="submit">Mis Préstamos Pendientes</button>
-                    </form>
-                    <form method="post" action="{% url 'logout' %}">
-                        {% csrf_token %}
-                        <button type="submit">Cerrar sesión</button>
-                    </form>
-                </nav>
-            </header>
-        {% else %}
-            <!-- Header por Defecto para Usuario sin Grupo -->
-            <header>
-                <h1>Bienvenido</h1>
-                <nav>
-                    <form method="post" action="{% url 'logout' %}">
-                        {% csrf_token %}
-                        <button type="submit">Cerrar sesión</button>
-                    </form>
-                </nav>
-            </header>
-        {% endif %}
-    {% else %}
-        <!-- Header para Usuario No Autenticado -->
-        <header>
-            <h1>Bienvenido a Mi Aplicación</h1>
-            <nav>
-                <form method="get" action="{% url 'login' %}">
-                    <button type="submit">Iniciar sesión</button>
-                </form>
-                <form method="get" action="{% url 'register' %}">
-                    <button type="submit">Registrar cuenta</button>
-                </form>
+                {% else %}
+                    <a href="{% url 'login' %}" class="btn btn-light btn-sm mr-2">Iniciar sesión</a>
+                    <a href="{% url 'register' %}" class="btn btn-light btn-sm">Registrar cuenta</a>
+                {% endif %}
             </nav>
-        </header>
-    {% endif %}
+        </div>
+    </header>
 
-    <!-- Mensajes y Contenido Principal -->
-    {% if messages %}
-        <ul>
-            {% for message in messages %}
-                <li>{{ message }}</li>
-            {% endfor %}
-        </ul>
-    {% endif %}
+    <!-- Mensajes de Django -->
+    <div class="container my-3">
+        {% if messages %}
+            <div class="alert alert-info">
+                <ul class="mb-0">
+                    {% for message in messages %}
+                        <li>{{ message }}</li>
+                    {% endfor %}
+                </ul>
+            </div>
+        {% endif %}
+    </div>
 
-    <!-- Bloque de contenido principal -->
-    {% block content %}{% endblock %}
+    <!-- Contenido Principal -->
+    <main class="container my-4">
+        {% block content %}{% endblock %}
+    </main>
+
+    <!-- Bootstrap JS local -->
+    <script src="{% static 'inventariosTec/js/bootstrap.bundle.min.js' %}"></script>
+
+    <!-- Script para mostrar/ocultar contraseña -->
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            const togglePassword = document.querySelector("#togglePassword");
+            const passwordField = document.querySelector("#password");
+            const eyeIcon = document.querySelector("#eyeIcon");
+
+            togglePassword.addEventListener("click", function () {
+                // Alterna entre mostrar y ocultar la contraseña
+                const type = passwordField.getAttribute("type") === "password" ? "text" : "password";
+                passwordField.setAttribute("type", type);
+
+                // Cambia el icono
+                eyeIcon.classList.toggle("bi-eye");
+                eyeIcon.classList.toggle("bi-eye-slash");
+            });
+        });
+    </script>
 
 </body>
 </html>
