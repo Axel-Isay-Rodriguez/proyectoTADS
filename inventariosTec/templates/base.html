@@ -19,7 +19,7 @@
     <header class="bg-primary text-white py-3">
         <div class="container d-flex justify-content-between align-items-center">
             <div class="d-flex align-items-center">
-                <img src="{% static 'inventariosTec/img/tecnm_logo.png' %}" alt="Logo" class="logo mr-3" style="height: 50px;">
+                <img src="{% static 'inventariosTec/img/LOGO_TECNM_BLANCO-1536x656.png' %}" alt="Logo" class="logo mr-3" style="height: 50px;">
                 <h1 class="h5 mb-0">
                     {% if user.is_authenticated %}
                         Bienvenido {% if 'Administrador' in user_groups %}Administrador
@@ -34,19 +34,7 @@
             </div>
             <nav class="d-flex">
                 {% if user.is_authenticated %}
-                    {% if 'Administrador' in user_groups %}
-                        <a href="{% url 'admin_dashboard' %}" class="btn btn-light btn-sm mr-2">Dashboard Admin</a>
-                        <a href="{% url 'lista_productos' %}" class="btn btn-light btn-sm mr-2">Gestionar Productos</a>
-                        <a href="{% url 'gestionar_usuarios' %}" class="btn btn-light btn-sm mr-2">Gestionar Usuarios</a>
-                    {% elif 'Operador' in user_groups %}
-                        <a href="{% url 'operador_dashboard' %}" class="btn btn-light btn-sm mr-2">Dashboard Operador</a>
-                        <a href="{% url 'lista_productos' %}" class="btn btn-light btn-sm mr-2">Ver Productos</a>
-                    {% elif 'Usuario Avanzado' in user_groups %}
-                        <a href="{% url 'mis_ordenes_trabajo' %}" class="btn btn-light btn-sm mr-2">Mis Órdenes de Trabajo</a>
-                        <a href="{% url 'mis_prestamos' %}" class="btn btn-light btn-sm mr-2">Mis Préstamos</a>
-                    {% elif 'Usuario Básico' in user_groups %}
-                        <a href="{% url 'mis_prestamos' %}" class="btn btn-light btn-sm mr-2">Mis Préstamos Pendientes</a>
-                    {% endif %}
+                    <!-- Botón de Cerrar sesión siempre visible -->
                     <form method="post" action="{% url 'logout' %}" class="d-inline">
                         {% csrf_token %}
                         <button type="submit" class="btn btn-danger btn-sm">Cerrar sesión</button>

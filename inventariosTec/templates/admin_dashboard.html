@@ -1,22 +1,37 @@
 {% extends "base.html" %}
+{% load static %}
+
+{% block title %}Panel de Administrador{% endblock %}
 
 {% block content %}
-<h2>Panel de Administrador</h2>
-
-<p>Bienvenido al panel de administrador. Aquí puedes gestionar usuarios, permisos y ver información general de la aplicación.</p>
-
-<!-- Enlace para gestionar usuarios -->
-<form method="get" action="{% url 'gestionar_usuarios' %}">
-    <button type="submit" class="admin-button">Gestionar Usuarios y Grupos</button>
-</form>
-
-<form method="get" action="{% url 'gestionar_producto' %}">
-    <button type="submit" class="admin-button">Agregar o Modificar Productos</button>
-</form>
-
-<form method="get" action="{% url 'lista_productos' %}">
-    <button type="submit" class="admin-button">Lista de Productos</button>
-</form>
-
-<!-- Otras funcionalidades del administrador -->
+<div id="admin-dashboard" class="container my-5 p-4 rounded" style="background-color: #1b396a;">
+    <h2 class="text-center mb-4 text-light">Panel de Administrador</h2>
+    <p class="text-center text-light">Bienvenido al panel de administrador. Aquí puedes gestionar usuarios, permisos y ver información general de la aplicación.</p>
+    
+    <!-- Diseño en forma de triángulo con íconos -->
+    <div class="row justify-content-center">
+        <!-- Botón superior -->
+        <div class="col-12 col-md-6 mb-4 d-flex justify-content-center">
+            <a href="{% url 'gestionar_usuarios' %}" class="btn btn-light btn-lg btn-block text-uppercase font-weight-bold rounded-lg d-flex flex-column align-items-center p-4">
+                <img src="{% static 'inventariosTec/img/grupos-de-usuarios.png' %}" alt="Icono Usuarios" class="mb-2" style="width: 50px; height: 50px;">
+                Gestionar Usuarios y Grupos
+            </a>
+        </div>
+    </div>
+    <div class="row justify-content-around">
+        <!-- Botones inferiores -->
+        <div class="col-12 col-md-5 mb-4 d-flex justify-content-center">
+            <a href="{% url 'lista_productos' %}" class="btn btn-light btn-lg btn-block text-uppercase font-weight-bold rounded-lg d-flex flex-column align-items-center p-4">
+                <img src="{% static 'inventariosTec/img/ListaProducto.png' %}" alt="Icono Lista" class="mb-2" style="width: 50px; height: 50px;">
+                Lista de Productos
+            </a>
+        </div>
+        <div class="col-12 col-md-5 mb-4 d-flex justify-content-center">
+            <a href="{% url 'gestionar_producto' %}" class="btn btn-light btn-lg btn-block text-uppercase font-weight-bold rounded-lg d-flex flex-column align-items-center p-4">
+                <img src="{% static 'inventariosTec/img/GestionarProductos.png' %}" alt="Icono Agregar" class="mb-2" style="width: 50px; height: 50px;">
+                Agregar o Modificar Productos
+            </a>
+        </div>
+    </div>
+</div>
 {% endblock %}
