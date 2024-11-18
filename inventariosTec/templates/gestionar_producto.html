@@ -1,46 +1,165 @@
 {% extends "base.html" %}
-
 {% block content %}
-<h2>{% if producto_form.instance.pk %}Modificar Producto{% else %}Agregar Producto{% endif %}</h2>
+<div class="container my-5">
+    <h2 class="text-center text-light mb-4">
+        {% if producto_form.instance.pk %}
+            Modificar Producto
+        {% else %}
+            Agregar Producto
+        {% endif %}
+    </h2>
 
-<!-- Formulario para Producto -->
-<form method="post">
-    {% csrf_token %}
-    {{ producto_form.as_p }}
-    <button type="submit" name="guardar_producto">Guardar Producto</button>
-</form>
+    <!-- Formulario para Producto -->
+    <div class="card shadow mb-5 rounded">
+        <div class="card-header text-light text-center" style="background-color: #0d6efd;">
+            <h4>Información del Producto</h4>
+        </div>
+        <div class="card-body">
+            <form method="post">
+                {% csrf_token %}
+                <div class="row">
+                    <!-- Nombre -->
+                    <div class="form-group col-md-6">
+                        <label for="id_nombre" class="font-weight-bold text-dark">
+                            Nombre:
+                            <i class="bi bi-info-circle" data-bs-toggle="tooltip" title="Nombre del producto"></i>
+                        </label>
+                        {{ producto_form.nombre }}
+                    </div>
 
-<!-- Formularios Modales para Crear Partida, Categoria, etc. -->
-<h3>Agregar Nuevas Opciones Relacionadas</h3>
+                    <!-- Descripción -->
+                    <div class="form-group col-md-6">
+                        <label for="id_descripcion" class="font-weight-bold text-dark">
+                            Descripción:
+                            <i class="bi bi-info-circle" data-bs-toggle="tooltip" title="Descripción breve del producto"></i>
+                        </label>
+                        {{ producto_form.descripcion }}
+                        <small class="text-muted d-block text-right">Máximo 300 caracteres.</small>
+                    </div>
 
-<!-- Formulario para Partida -->
-<form method="post" action="">
-    {% csrf_token %}
-    <fieldset>
-        <legend>Agregar Partida</legend>
-        {{ partida_form.as_p }}
-        <button type="submit" name="guardar_partida">Agregar Partida</button>
-    </fieldset>
-</form>
+                    <!-- Otros campos -->
+                    <div class="form-group col-md-6">
+                        <label for="id_partida" class="font-weight-bold text-dark">Partida:</label>
+                        {{ producto_form.partida }}
+                    </div>
+                    <div class="form-group col-md-6">
+                        <label for="id_categoria" class="font-weight-bold text-dark">Categoría:</label>
+                        {{ producto_form.categoria }}
+                    </div>
+                    <div class="form-group col-md-6">
+                        <label for="id_unidad_medida" class="font-weight-bold text-dark">Unidad de Medida:</label>
+                        {{ producto_form.unidad_medida }}
+                    </div>
+                    <div class="form-group col-md-6">
+                        <label for="id_cantidad_disponible" class="font-weight-bold text-dark">Cantidad Disponible:</label>
+                        {{ producto_form.cantidad_disponible }}
+                    </div>
+                    <div class="form-group col-md-6">
+                        <label for="id_estado" class="font-weight-bold text-dark">Estado:</label>
+                        {{ producto_form.estado }}
+                    </div>
+                </div>
+                <div class="text-center mt-3">
+                    <button type="submit" name="guardar_producto" class="btn btn-success btn-lg font-weight-bold w-100">
+                        <i class="bi bi-save"></i> Guardar Producto
+                    </button>
+                    <button type="reset" class="btn btn-secondary btn-lg font-weight-bold w-100 mt-2">
+                        <i class="bi bi-x-circle"></i> Limpiar Formulario
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
 
-<!-- Formulario para Categoría -->
-<form method="post" action="">
-    {% csrf_token %}
-    <fieldset>
-        <legend>Agregar Categoría</legend>
-        {{ categoria_form.as_p }}
-        <button type="submit" name="guardar_categoria">Agregar Categoría</button>
-    </fieldset>
-</form>
+    <!-- Agregar Nuevas Opciones Relacionadas -->
+    <div class="row">
+        <!-- Formulario para Partida -->
+        <div class="col-md-4">
+            <div class="card shadow mb-4 rounded">
+                <div class="card-header text-white text-center" style="background-color: #0d6efd;">
+                    <h5 class="font-weight-bold">Agregar Partida</h5>
+                </div>
+                <div class="card-body">
+                    <form method="post">
+                        {% csrf_token %}
+                        {{ partida_form.as_p }}
+                        <button type="submit" name="guardar_partida" class="btn btn-primary btn-block font-weight-bold">
+                            <i class="bi bi-plus-circle"></i> Guardar
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
 
-<!-- Formulario para Unidad de Medida -->
-<form method="post" action="">
-    {% csrf_token %}
-    <fieldset>
-        <legend>Agregar Unidad de Medida</legend>
-        {{ unidad_medida_form.as_p }}
-        <button type="submit" name="guardar_unidad_medida">Agregar Unidad de Medida</button>
-    </fieldset>
-</form>
+        <!-- Formulario para Categoría -->
+        <div class="col-md-4">
+            <div class="card shadow mb-4 rounded">
+                <div class="card-header text-white text-center" style="background-color: #0d6efd;">
+                    <h5 class="font-weight-bold">Agregar Categoría</h5>
+                </div>
+                <div class="card-body">
+                    <form method="post">
+                        {% csrf_token %}
+                        {{ categoria_form.as_p }}
+                        <button type="submit" name="guardar_categoria" class="btn btn-primary btn-block font-weight-bold">
+                            <i class="bi bi-plus-circle"></i> Guardar
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
 
+        <!-- Formulario para Unidad de Medida -->
+        <div class="col-md-4">
+            <div class="card shadow mb-4 rounded">
+                <div class="card-header text-white text-center" style="background-color: #0d6efd;">
+                    <h5 class="font-weight-bold">Agregar Unidad de Medida</h5>
+                </div>
+                <div class="card-body">
+                    <form method="post">
+                        {% csrf_token %}
+                        {{ unidad_medida_form.as_p }}
+                        <button type="submit" name="guardar_unidad_medida" class="btn btn-primary btn-block font-weight-bold">
+                            <i class="bi bi-plus-circle"></i> Guardar
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    button:hover {
+        transform: scale(1.05);
+        box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+    }
+
+    .card {
+        border-radius: 10px;
+        margin-bottom: 20px;
+    }
+
+    .form-control {
+        border-radius: 8px;
+    }
+
+    textarea.form-control {
+        height: 70px;
+    }
+
+    .row > .form-group {
+        margin-bottom: 15px;
+    }
+
+    @media (max-width: 768px) {
+        .row > .form-group {
+            width: 100%;
+        }
+
+        .card {
+            margin-bottom: 15px;
+        }
+    }
+</style>
 {% endblock %}
