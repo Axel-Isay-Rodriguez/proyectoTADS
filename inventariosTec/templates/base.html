@@ -19,18 +19,17 @@
     <header class="bg-primary text-white py-3">
         <div class="container d-flex justify-content-between align-items-center">
             <div class="d-flex align-items-center">
-                <img src="{% static 'inventariosTec/img/LOGO_TECNM_BLANCO-1536x656.png' %}" alt="Logo" class="logo mr-3" style="height: 50px;">
-                <h1 class="h5 mb-0">
-                    {% if user.is_authenticated %}
-                        Bienvenido {% if 'Administrador' in user_groups %}Administrador
-                        {% elif 'Operador' in user_groups %}Operador
-                        {% elif 'Usuario Avanzado' in user_groups %}Usuario Avanzado
-                        {% elif 'Usuario Básico' in user_groups %}Usuario Básico
+                <!-- Enlace al admin_dashboard -->
+                <a href="{% url 'admin_dashboard' %}" class="text-white text-decoration-none d-flex align-items-center">
+                    <img src="{% static 'inventariosTec/img/LOGO_TECNM_BLANCO-1536x656.png' %}" alt="Logo" class="logo mr-3" style="height: 50px;">
+                    <h1 class="h5 mb-0">
+                        {% if user.is_authenticated %}
+                            Bienvenido {% if 'Administrador' in user_groups %}Administrador{% endif %} ({{ user.username }})
+                        {% else %}
+                            Bienvenido a Mi Aplicación
                         {% endif %}
-                    {% else %}
-                        Bienvenido a Mi Aplicación
-                    {% endif %}
-                </h1>
+                    </h1>
+                </a>
             </div>
             <nav class="d-flex">
                 {% if user.is_authenticated %}
@@ -39,9 +38,6 @@
                         {% csrf_token %}
                         <button type="submit" class="btn btn-danger btn-sm">Cerrar sesión</button>
                     </form>
-                {% else %}
-                    <a href="{% url 'login' %}" class="btn btn-light btn-sm mr-2">Iniciar sesión</a>
-                    <a href="{% url 'register' %}" class="btn btn-light btn-sm">Registrar cuenta</a>
                 {% endif %}
             </nav>
         </div>

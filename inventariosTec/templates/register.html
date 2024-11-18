@@ -1,10 +1,99 @@
 {% extends "base.html" %}
 
 {% block content %}
-<h2>Registro de Usuario</h2>
-<form method="post">
-    {% csrf_token %}
-    {{ form.as_p }}
-    <button type="submit">Registrarse</button>
-</form>
+<div class="container my-5">
+    <h2 class="text-center text-light mb-4">¡Crea tu cuenta!</h2>
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <form method="post" class="bg-white p-4 rounded shadow-lg">
+                {% csrf_token %}
+
+                <!-- Campo de nombre de usuario -->
+                <div class="form-group position-relative">
+                    <label for="id_username" class="font-weight-bold text-black">Nombre de usuario:</label>
+                    <div class="input-group">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text bg-primary text-white"><i class="bi bi-person-fill"></i></span>
+                        </div>
+                        <input type="text" id="id_username" name="username" class="form-control" placeholder="Introduce tu nombre de usuario" value="{{ form.username.value|default:'' }}">
+                    </div>
+                </div>
+
+                <!-- Campo de correo electrónico -->
+                <div class="form-group position-relative">
+                    <label for="id_email" class="font-weight-bold text-black">Correo Electrónico:</label>
+                    <div class="input-group">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text bg-primary text-white"><i class="bi bi-envelope-fill"></i></span>
+                        </div>
+                        <input type="email" id="id_email" name="email" class="form-control" placeholder="Introduce tu correo electrónico" value="{{ form.email.value|default:'' }}">
+                    </div>
+                </div>
+
+                <!-- Campo de contraseña -->
+                <div class="form-group position-relative">
+                    <label for="id_password" class="font-weight-bold text-black">Contraseña:</label>
+                    <div class="input-group">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text bg-primary text-white"><i class="bi bi-lock-fill"></i></span>
+                        </div>
+                        <input type="password" id="id_password" name="password" class="form-control" placeholder="Crea una contraseña segura">
+                        <div class="input-group-append">
+                            <button type="button" class="btn btn-light border" id="togglePassword1">
+                                <i class="bi bi-eye-slash"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Campo de confirmación de contraseña -->
+                <div class="form-group position-relative">
+                    <label for="id_password_confirm" class="font-weight-bold text-black">Confirmar Contraseña:</label>
+                    <div class="input-group">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text bg-primary text-white"><i class="bi bi-lock-fill"></i></span>
+                        </div>
+                        <input type="password" id="id_password_confirm" name="password_confirm" class="form-control" placeholder="Repite tu contraseña">
+                        <div class="input-group-append">
+                            <button type="button" class="btn btn-light border" id="togglePassword2">
+                                <i class="bi bi-eye-slash"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Botón de registro -->
+                <div class="text-center">
+                    <button type="submit" class="btn btn-success btn-lg font-weight-bold w-100" style="transition: transform 0.3s;">
+                        ¡Registrarme!
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Script para mostrar/ocultar contraseñas -->
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const togglePassword1 = document.querySelector("#togglePassword1");
+        const passwordField1 = document.querySelector("#id_password");
+        const togglePassword2 = document.querySelector("#togglePassword2");
+        const passwordField2 = document.querySelector("#id_password_confirm");
+
+        togglePassword1.addEventListener("click", function () {
+            const type = passwordField1.getAttribute("type") === "password" ? "text" : "password";
+            passwordField1.setAttribute("type", type);
+            this.querySelector("i").classList.toggle("bi-eye");
+            this.querySelector("i").classList.toggle("bi-eye-slash");
+        });
+
+        togglePassword2.addEventListener("click", function () {
+            const type = passwordField2.getAttribute("type") === "password" ? "text" : "password";
+            passwordField2.setAttribute("type", type);
+            this.querySelector("i").classList.toggle("bi-eye");
+            this.querySelector("i").classList.toggle("bi-eye-slash");
+        });
+    });
+</script>
 {% endblock %}
