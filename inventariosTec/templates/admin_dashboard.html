@@ -4,13 +4,13 @@
 {% block title %}Panel de Administrador{% endblock %}
 
 {% block content %}
-<div id="admin-dashboard" class="container my-5 p-4 rounded" style="background-color: #1b396a;">
+<div id="admin-dashboard" class="container my-5 p-4" style="background-color: #1b396a; border: none;">
     <h2 class="text-center mb-4 text-light">Panel de Administrador</h2>
     <p class="text-center text-light">Bienvenido al panel de administrador. Aquí puedes gestionar usuarios, permisos y ver información general de la aplicación.</p>
     
-    <!-- Diseño en forma de triángulo con íconos -->
+    <!-- Diseño en forma de cuadrícula bien alineada -->
     <div class="row justify-content-center">
-        <!-- Botón superior -->
+        <!-- Botón Gestionar Usuarios -->
         <div class="col-12 col-md-6 mb-4 d-flex justify-content-center">
             <a href="{% url 'gestionar_usuarios' %}" class="btn btn-light btn-lg btn-block text-uppercase font-weight-bold rounded-lg d-flex flex-column align-items-center p-4">
                 <img src="{% static 'inventariosTec/img/grupos-de-usuarios.png' %}" alt="Icono Usuarios" class="mb-2" style="width: 50px; height: 50px;">
@@ -19,13 +19,14 @@
         </div>
     </div>
     <div class="row justify-content-around">
-        <!-- Botones inferiores -->
+        <!-- Botón Lista de Productos -->
         <div class="col-12 col-md-5 mb-4 d-flex justify-content-center">
             <a href="{% url 'lista_productos' %}" class="btn btn-light btn-lg btn-block text-uppercase font-weight-bold rounded-lg d-flex flex-column align-items-center p-4">
                 <img src="{% static 'inventariosTec/img/ListaProducto.png' %}" alt="Icono Lista" class="mb-2" style="width: 50px; height: 50px;">
                 Lista de Productos
             </a>
         </div>
+        <!-- Botón Agregar o Modificar Productos -->
         <div class="col-12 col-md-5 mb-4 d-flex justify-content-center">
             <a href="{% url 'gestionar_producto' %}" class="btn btn-light btn-lg btn-block text-uppercase font-weight-bold rounded-lg d-flex flex-column align-items-center p-4">
                 <img src="{% static 'inventariosTec/img/GestionarProductos.png' %}" alt="Icono Agregar" class="mb-2" style="width: 50px; height: 50px;">
@@ -34,23 +35,55 @@
         </div>
     </div>
 
-    <!-- Nuevo botón para listar préstamos y órdenes de trabajo -->
+    <!-- Botón Lista de Préstamos y Órdenes de Trabajo -->
     <div class="row justify-content-center">
         <div class="col-12 col-md-6 mb-4 d-flex justify-content-center">
             <a href="{% url 'listar_prestamos_ordenes' %}" class="btn btn-light btn-lg btn-block text-uppercase font-weight-bold rounded-lg d-flex flex-column align-items-center p-4">
-                <img src="{% static 'inventariosTec/img/ListaPrestamos.png' %}" alt="Icono Préstamos" class="mb-2" style="width: 50px; height: 50px;">
+                <img src="{% static 'inventariosTec/img/pngwing.com (1).png' %}" alt="Icono Préstamos" class="mb-2" style="width: 50px; height: 50px;">
                 Lista de Préstamos y Órdenes de Trabajo
             </a>
         </div>
     </div>
-    <!-- Nuevo botón para listar préstamos y órdenes de trabajo -->
- <div class="row justify-content-center">
-    <div class="col-12 col-md-6 mb-4 d-flex justify-content-center">
-        <a href="{% url 'crear_prestamo' %}" class="btn btn-light btn-lg btn-block text-uppercase font-weight-bold rounded-lg d-flex flex-column align-items-center p-4">
-            <img src="{% static 'inventariosTec/img/ListaPrestamos.png' %}" alt="Icono Préstamos" class="mb-2" style="width: 50px; height: 50px;">
-            crear prestamo
-        </a>
-    </div>
-    </div>
 </div>
+
+<style>
+    /* Botones del panel */
+    .btn {
+        border-radius: 10px;
+        font-weight: bold;
+        background-color: #f8f9fa;
+        color: #212529;
+        transition: transform 0.2s, box-shadow 0.2s;
+    }
+
+    .btn:hover {
+        transform: scale(1.05);
+        box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+    }
+
+    .btn img {
+        max-width: 50px;
+        max-height: 50px;
+    }
+
+    .btn span {
+        font-size: 1.1rem;
+    }
+
+    /* Contenedor del dashboard */
+    #admin-dashboard {
+        box-shadow: none; /* Eliminando el contorno o sombra del cuadro */
+    }
+
+    @media (max-width: 768px) {
+        .btn {
+            height: auto;
+            padding: 20px;
+        }
+
+        .btn span {
+            font-size: 1rem;
+        }
+    }
+</style>
 {% endblock %}
