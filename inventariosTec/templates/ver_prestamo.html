@@ -1,0 +1,72 @@
+{% extends "base.html" %}
+
+{% block title %}Ver Préstamo{% endblock %}
+
+{% block content %}
+<div class="container my-5 p-4 rounded" style="background-color: #1b396a;">
+    <h2 class="text-center text-light">Detalles del Préstamo</h2>
+    
+    <!-- Información General del Préstamo -->
+    <div class="card my-4 p-4 bg-light">
+        <h3>Información del Préstamo</h3>
+        <p><strong>ID Préstamo:</strong> {{ prestamo.id }}</p>
+        <p><strong>Usuario:</strong> {{ prestamo.usuario.username }}</p>
+        <p><strong>Fecha de Inicio:</strong> {{ prestamo.fecha_inicio }}</p>
+        <p><strong>Fecha de Finalización:</strong> 
+            {% if prestamo.fecha_finalizacion %}
+                {{ prestamo.fecha_finalizacion }}
+            {% else %}
+                En Proceso
+            {% endif %}
+        </p>
+        <p><strong>Estado:</strong> {% if prestamo.activo %}Activo{% else %}Finalizado{% endif %}</p>
+    </div>
+
+    <!-- Detalles del Préstamo -->
+    <div class="card my-4 p-4 bg-light">
+        <h3>Detalles del Préstamo</h3>
+        <table class="table table-bordered table-striped mt-3">
+            <thead>
+                <tr>
+                    <th scope="col">Producto</th>
+                    <th scope="col">Cantidad</th>
+                    <th scope="col">Estado del Material</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for detalle in detalles_prestamo %}
+                <tr>
+                    <td>{{ detalle.producto.nombre }}</td>
+                    <td>{{ detalle.cantidad }}</td>
+                    <td>{{ detalle.get_estado_display }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Información de la Orden de Trabajo (si existe) -->
+    {% if orden_trabajo %}
+    <div class="card my-4 p-4 bg-light">
+        <h3>Información de la Orden de Trabajo</h3>
+        <p><strong>Lugar:</strong> {{ orden_trabajo.lugar }}</p>
+        <p><strong>Tipo de Trabajo:</strong> {{ orden_trabajo.tipo_trabajo }}</p>
+        <p><strong>Descripción:</strong> {{ orden_trabajo.descripcion }}</p>
+        <p><strong>Estado:</strong> {{ orden_trabajo.get_estado_display }}</p>
+        <p><strong>Fecha de Inicio:</strong> {{ orden_trabajo.fecha_inicio }}</p>
+        <p><strong>Fecha de Finalización:</strong> 
+            {% if orden_trabajo.fecha_finalizacion %}
+                {{ orden_trabajo.fecha_finalizacion }}
+            {% else %}
+                En Proceso
+            {% endif %}
+        </p>
+    </div>
+    {% endif %}
+
+    <!-- Botón de Regresar -->
+    <div class="text-center">
+        <a href="{% url 'historial_prestamos' %}" class="btn btn-secondary">Regresar</a>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,60 @@
+{% extends "base.html" %}
+
+{% block title %}Editar Préstamo Completo{% endblock %}
+
+{% block content %}
+<div class="container my-5 p-4 rounded" style="background-color: #1b396a;">
+    <h2 class="text-center text-secondary">Editar Préstamo Completo</h2>
+    <form method="post">
+        {% csrf_token %}
+
+        <!-- Información del Préstamo -->
+        <div class="card my-4 p-3">
+            <h3 class="text-secondary">Información del Préstamo</h3>
+            {{ prestamo_form.as_p }}
+        </div>
+
+        <!-- Información de la Orden de Trabajo -->
+        {% if orden_trabajo_form %}
+        <div class="card my-4 p-3">
+            <h3 class="text-secondary">Orden de Trabajo Asignada</h3>
+            {{ orden_trabajo_form.as_p }}
+        </div>
+        {% endif %}
+
+        <!-- Detalles del Préstamo -->
+        <div class="card my-4 p-3">
+            <h3 class="text-secondary">Detalles del Préstamo</h3>
+            {{ detalle_formset.management_form }}
+            {% for form in detalle_formset %}
+                <div class="card mb-3 p-3">
+                    <div class="form-row">
+                        {{ form.as_p }}
+                        <div class="form-check">
+                            <label class="form-check-label">
+                                {{ form.DELETE }} Eliminar
+                            </label>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+
+        <!-- Botón para agregar más detalles de préstamo -->
+        <button type="button" class="btn btn-secondary mb-3" id="add-detail">Agregar otro detalle</button>
+
+        <!-- Botones de Guardar o Cancelar -->
+        <div class="text-center my-4">
+            <button type="submit" class="btn btn-light">Guardar Cambios</button>
+            <a href="{% url 'listar_prestamos_ordenes' %}" class="btn btn-secondary">Cancelar</a>
+        </div>
+    </form>
+</div>
+
+<!-- Script para manejar la adición de más detalles de préstamo -->
+<script>
+    document.getElementById('add-detail').addEventListener('click', function() {
+        alert('Esta funcionalidad aún no está implementada.');
+    });
+</script>
+{% endblock %}

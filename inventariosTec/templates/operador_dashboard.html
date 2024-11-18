@@ -1,7 +1,44 @@
 {% extends "base.html" %}
+{% load static %}
+
+{% block title %}Panel de Operador{% endblock %}
 
 {% block content %}
-<h2>Panel de Operador</h2>
-<p>Bienvenido al panel de operador. Aquí puedes generar órdenes de trabajo y gestionar préstamos.</p>
-<!-- Agrega enlaces y funcionalidades adicionales para el operador -->
+<div id="basic-user-dashboard" class="container my-5 p-4 rounded" style="background-color: #1b396a;">
+    <h2 class="text-center mb-4 text-light">Panel de Operador</h2>
+    <p class="text-center text-light">Bienvenido al panel de usuario. Aquí puedes ver tu información personal y gestionar tus préstamos.</p>
+    
+    <!-- Información del usuario -->
+    <div class="row justify-content-center mb-5">
+        <div class="col-12 col-md-6 d-flex justify-content-center">
+            <div class="card w-100 p-4" style="background-color: #ffffff;">
+                <h3 class="text-center" style="color: #1b396a;">Mi Información</h3>
+                <p><strong>Nombre:</strong> {{ user.get_full_name }}</p>
+                <p><strong>Correo Electrónico:</strong> {{ user.email }}</p>
+                <p><strong>Usuario:</strong> {{ user.username }}</p>
+            </div>
+        </div>
+    </div>
+
+    
+    <div class="row justify-content-center">
+        <div class="col-12 col-md-6 mb-4 d-flex justify-content-center">
+            <a href="{% url 'ver_ordenes_asignadas' %}" class="btn btn-primary btn-lg btn-block text-uppercase font-weight-bold rounded-lg d-flex flex-column align-items-center p-4">
+                <img src="{% static 'inventariosTec/img/ordenes_trabajo.png' %}" alt="Icono Órdenes" class="mb-2" style="width: 50px; height: 50px;">
+                Ver Órdenes de Trabajo Asignadas
+            </a>
+        </div>
+    </div>
+    </div>
+
+    <div class="row justify-content-center">
+        <div class="col-12 col-md-6 mb-4 d-flex justify-content-center">
+            <a href="{% url 'historial_prestamos' %}" class="btn btn-light btn-lg btn-block text-uppercase font-weight-bold rounded-lg d-flex flex-column align-items-center p-4">
+                <img src="{% static 'inventariosTec/img/HistorialPrestamos.png' %}" alt="Icono Historial" class="mb-2" style="width: 50px; height: 50px;">
+                Historial de Préstamos
+            </a>
+        </div>
+    </div>
+    </div>
+</div>
 {% endblock %}

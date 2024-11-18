@@ -33,5 +33,24 @@
             </a>
         </div>
     </div>
+
+    <!-- Nuevo botón para listar préstamos y órdenes de trabajo -->
+    <div class="row justify-content-center">
+        <div class="col-12 col-md-6 mb-4 d-flex justify-content-center">
+            <a href="{% url 'listar_prestamos_ordenes' %}" class="btn btn-light btn-lg btn-block text-uppercase font-weight-bold rounded-lg d-flex flex-column align-items-center p-4">
+                <img src="{% static 'inventariosTec/img/ListaPrestamos.png' %}" alt="Icono Préstamos" class="mb-2" style="width: 50px; height: 50px;">
+                Lista de Préstamos y Órdenes de Trabajo
+            </a>
+        </div>
+    </div>
+    <!-- Nuevo botón para listar préstamos y órdenes de trabajo -->
+ <div class="row justify-content-center">
+    <div class="col-12 col-md-6 mb-4 d-flex justify-content-center">
+        <a href="{% url 'crear_prestamo' %}" class="btn btn-light btn-lg btn-block text-uppercase font-weight-bold rounded-lg d-flex flex-column align-items-center p-4">
+            <img src="{% static 'inventariosTec/img/ListaPrestamos.png' %}" alt="Icono Préstamos" class="mb-2" style="width: 50px; height: 50px;">
+            crear prestamo
+        </a>
+    </div>
+    </div>
 </div>
 {% endblock %}

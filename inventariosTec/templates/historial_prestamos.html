@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+
+{% block title %}Historial de Préstamos{% endblock %}
+
+{% block content %}
+<div class="container my-5 p-4 rounded" style="background-color: #1b396a;">
+    <h2 class="text-center text-light">Historial de Préstamos</h2>
+    <table class="table table-hover table-bordered table-striped bg-light mt-4">
+        <thead class="thead-dark">
+            <tr>
+                <th scope="col">ID Préstamo</th>
+                <th scope="col">Usuario</th>
+                <th scope="col">Fecha de Inicio</th>
+                <th scope="col">Fecha de Finalización</th>
+                <th scope="col">Estado</th>
+                <th scope="col">Detalles</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for prestamo in prestamos %}
+            <tr>
+                <td>{{ prestamo.id }}</td>
+                <td>{{ prestamo.usuario.username }}</td>
+                <td>{{ prestamo.fecha_inicio }}</td>
+                <td>
+                    {% if prestamo.fecha_finalizacion %}
+                        {{ prestamo.fecha_finalizacion }}
+                    {% else %}
+                        En Proceso
+                    {% endif %}
+                </td>
+                <td>
+                    {% if prestamo.activo %}
+                        Activo
+                    {% else %}
+                        Finalizado
+                    {% endif %}
+                </td>
+                <td>
+                    <a href="{% url 'ver_prestamo' prestamo.id %}" class="btn btn-secondary btn-sm">Ver</a>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

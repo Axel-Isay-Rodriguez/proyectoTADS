@@ -19,12 +19,34 @@
     <header class="bg-primary text-white py-3">
         <div class="container d-flex justify-content-between align-items-center">
             <div class="d-flex align-items-center">
-                <!-- Enlace al admin_dashboard -->
-                <a href="{% url 'admin_dashboard' %}" class="text-white text-decoration-none d-flex align-items-center">
+                <!-- Enlace al dashboard correspondiente -->
+                <a href="
+                    {% if 'Administrador' in user_groups %}
+                        {% url 'admin_dashboard' %}
+                    {% elif 'Operador' in user_groups %}
+                        {% url 'operador_dashboard' %}
+                    {% elif 'Usuario Avanzado' in user_groups %}
+                        {% url 'usuario_avanzado_dashboard' %}
+                    {% elif 'Usuario Básico' in user_groups %}
+                        {% url 'usuario_basico_dashboard' %}
+                    {% else %}
+                        {% url 'login' %}
+                    {% endif %}
+                " class="text-white text-decoration-none d-flex align-items-center">
                     <img src="{% static 'inventariosTec/img/LOGO_TECNM_BLANCO-1536x656.png' %}" alt="Logo" class="logo mr-3" style="height: 50px;">
                     <h1 class="h5 mb-0">
                         {% if user.is_authenticated %}
-                            Bienvenido {% if 'Administrador' in user_groups %}Administrador{% endif %} ({{ user.username }})
+                            Bienvenido 
+                            {% if 'Administrador' in user_groups %}
+                                Administrador
+                            {% elif 'Operador' in user_groups %}
+                                Operador
+                            {% elif 'Usuario Avanzado' in user_groups %}
+                                Usuario Avanzado
+                            {% elif 'Usuario Básico' in user_groups %}
+                                Usuario Básico
+                            {% endif %}
+                            ({{ user.username }})
                         {% else %}
                             Bienvenido a Mi Aplicación
                         {% endif %}

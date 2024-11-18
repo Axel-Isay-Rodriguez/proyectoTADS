@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+
+{% block title %}Editar Préstamo{% endblock %}
+
+{% block content %}
+<div class="container my-5 p-4 rounded" style="background-color: #1b396a;">
+    <h2 class="text-center text-light">Editar Préstamo</h2>
+    <form method="post">
+        {% csrf_token %}
+        <div class="card my-4 p-3">
+            <!-- Información del Préstamo -->
+            <h3>Información del Préstamo</h3>
+            {{ form.as_p }}
+        </div>
+        <!-- Botones de Guardar o Cancelar -->
+        <div class="text-center my-4">
+            <button type="submit" class="btn btn-light">Guardar Cambios</button>
+            <a href="{% url 'listar_prestamos_ordenes' %}" class="btn btn-secondary">Cancelar</a>
+        </div>
+    </form>
+</div>
+{% endblock %}

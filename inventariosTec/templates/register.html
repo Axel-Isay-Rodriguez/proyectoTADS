@@ -8,6 +8,17 @@
             <form method="post" class="bg-white p-4 rounded shadow-lg">
                 {% csrf_token %}
 
+                <!-- Campo de nombre -->
+                <div class="form-group position-relative">
+                    <label for="id_first_name" class="font-weight-bold text-black">Nombre:</label>
+                    <div class="input-group">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text bg-primary text-white"><i class="bi bi-person-badge-fill"></i></span>
+                        </div>
+                        <input type="text" id="id_first_name" name="first_name" class="form-control" placeholder="Introduce tu nombre" value="{{ form.first_name.value|default:'' }}">
+                    </div>
+                </div>
+
                 <!-- Campo de nombre de usuario -->
                 <div class="form-group position-relative">
                     <label for="id_username" class="font-weight-bold text-black">Nombre de usuario:</label>

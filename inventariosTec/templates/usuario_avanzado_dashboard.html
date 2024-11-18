@@ -1,7 +1,52 @@
 {% extends "base.html" %}
+{% load static %}
+
+{% block title %}Panel de Usuario Avanzado{% endblock %}
 
 {% block content %}
-<h2>Panel de Usuario Avanzado</h2>
-<p>Bienvenido. Aquí puedes ver tus órdenes de trabajo y préstamos pendientes.</p>
-<!-- Agrega una lista de órdenes y préstamos pendientes para el usuario avanzado -->
+<div id="admin-dashboard" class="container my-5 p-4 rounded" style="background-color: #1b396a;">
+    <h2 class="text-center mb-4 text-light">Panel de Usuario Avanzado</h2>
+    <p class="text-center text-light">Bienvenido al panel de Usuario Avanzado. Aquí puedes gestionar usuarios, permisos y ver información general de la aplicación.</p>
+    
+    <!-- Información del usuario -->
+    <div class="row justify-content-center mb-5">
+        <div class="col-12 col-md-6 d-flex justify-content-center">
+            <div class="card w-100 p-4" style="background-color: #ffffff;">
+                <h3 class="text-center" style="color: #1b396a;">Mi Información</h3>
+                <p><strong>Nombre:</strong> {{ user.get_full_name }}</p>
+                <p><strong>Correo Electrónico:</strong> {{ user.email }}</p>
+                <p><strong>Usuario:</strong> {{ user.username }}</p>
+            </div>
+        </div>
+    </div>
+
+
+        <!-- Botón para ver la lista completa de préstamos -->
+        <div class="row justify-content-center">
+            <div class="col-12 col-md-6 mb-4 d-flex justify-content-center">
+                <a href="{% url 'historial_prestamos' %}" class="btn btn-light btn-lg btn-block text-uppercase font-weight-bold rounded-lg d-flex flex-column align-items-center p-4">
+                    <img src="{% static 'inventariosTec/img/HistorialPrestamos.png' %}" alt="Icono Historial" class="mb-2" style="width: 50px; height: 50px;">
+                    Historial de Préstamos
+                </a>
+            </div>
+        </div>
+    <!-- Nuevo botón para listar préstamos y órdenes de trabajo -->
+    <div class="row justify-content-center">
+        <div class="col-12 col-md-6 mb-4 d-flex justify-content-center">
+            <a href="{% url 'listar_prestamos_ordenes' %}" class="btn btn-light btn-lg btn-block text-uppercase font-weight-bold rounded-lg d-flex flex-column align-items-center p-4">
+                <img src="{% static 'inventariosTec/img/ListaPrestamos.png' %}" alt="Icono Préstamos" class="mb-2" style="width: 50px; height: 50px;">
+                Lista de Préstamos y Órdenes de Trabajo
+            </a>
+        </div>
+    </div>
+    <!-- Nuevo botón para listar préstamos y órdenes de trabajo -->
+ <div class="row justify-content-center">
+    <div class="col-12 col-md-6 mb-4 d-flex justify-content-center">
+        <a href="{% url 'crear_prestamo' %}" class="btn btn-light btn-lg btn-block text-uppercase font-weight-bold rounded-lg d-flex flex-column align-items-center p-4">
+            <img src="{% static 'inventariosTec/img/ListaPrestamos.png' %}" alt="Icono Préstamos" class="mb-2" style="width: 50px; height: 50px;">
+            crear prestamo
+        </a>
+    </div>
+    </div>
+</div>
 {% endblock %}

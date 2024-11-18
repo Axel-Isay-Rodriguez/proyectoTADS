@@ -1,0 +1,62 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Crear Préstamo{% endblock %}
+{% block content %}
+<div class="container my-5 p-4 rounded" style="background-color: #1b396a;">
+    <h2 class="text-center text-light">Crear Préstamo</h2>
+    <form method="post">
+        {% csrf_token %}
+
+        <!-- Formulario de Prestamo -->
+        <div class="card my-4 p-3">
+            <h3>Información del Préstamo</h3>
+            {{ prestamo_form.as_p }}
+        </div>
+
+        <!-- Selector de Orden de Trabajo Existente -->
+        <div class="card my-4 p-3">
+            <h3>Asignar Orden de Trabajo Existente (Opcional)</h3>
+            <div class="form-group">
+                <label for="orden_trabajo_existente" class="text-light">Seleccionar Orden de Trabajo:</label>
+                <select name="orden_trabajo_existente" id="orden_trabajo_existente" class="form-control">
+                    <option value="">-- Ninguna --</option>
+                    {% for orden in ordenes_trabajo %}
+                        <option value="{{ orden.id }}">{{ orden.lugar }} - {{ orden.tipo_trabajo }} ({{ orden.estado }})</option>
+                    {% endfor %}
+                </select>
+            </div>
+        </div>
+
+        <!-- Formulario de Orden de Trabajo Nuevo -->
+        <div class="card my-4 p-3">
+            <h3>Crear Nueva Orden de Trabajo (Opcional)</h3>
+            {{ orden_form.as_p }}
+        </div>
+
+        <!-- Formset de Detalles del Préstamo -->
+        <div class="card my-4 p-3">
+            <h3>Detalles del Préstamo</h3>
+            {{ detalle_formset.management_form }}
+            {% for form in detalle_formset %}
+                <div class="form-row">
+                    {{ form.as_p }}
+                </div>
+                <hr>
+            {% endfor %}
+        </div>
+
+        <!-- Botón para agregar más detalles de préstamo -->
+        <button type="button" class="btn btn-secondary mb-3" id="add-detail">Agregar otro detalle</button>
+
+        <!-- Botones de Guardar o Cancelar -->
+        <div class="text-center my-4">
+            <button type="submit" class="btn btn-light">Guardar Préstamo</button>
+            <a href="{% url 'admin_dashboard' %}" class="btn btn-secondary">Cancelar</a>
+        </div>
+    </form>
+</div>
+
+<!-- Bootstrap JS local -->
+<script src="{% static 'inventariosTec/js/bootstrap.bundle.min.js' %}"></script>
+{% endblock %}
