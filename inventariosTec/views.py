@@ -10,8 +10,6 @@ from django.utils.cache import add_never_cache_headers
 from django.middleware.cache import MiddlewareMixin
 from .factories import FormFactory  # Importa FormFactory
 from .models import Producto
-from django.contrib.auth.models import Group
-from django.db import models
 from inventariosTec.models import PrestamoDetalle
 
 class NoCacheMiddleware(MiddlewareMixin):
@@ -128,7 +126,10 @@ def usuario_basico_dashboard(request):
 @user_passes_test(es_administrador)
 @no_cache
 def gestionar_usuarios(request):
-    usuarios = User.objects.all()
+    query = request.GET.get('q', '')  # Obtén el término de búsqueda desde la URL
+    usuarios = User.objects.filter(
+        Q(username__icontains=query)
+    )  # Filtra usuarios por nombre de usuario o correo electrónico
     grupos = Group.objects.all()
 
     if request.method == 'POST':
@@ -144,7 +145,11 @@ def gestionar_usuarios(request):
         messages.success(request, f'Grupo actualizado para {usuario.username}')
         return redirect('gestionar_usuarios')
 
-    return render(request, 'gestionar_usuarios.html', {'usuarios': usuarios, 'grupos': grupos})
+    return render(request, 'gestionar_usuarios.html', {
+        'usuarios': usuarios,
+        'grupos': grupos,
+        'query': query,  # Incluye el término de búsqueda en el contexto
+    })
 
 @login_required
 @user_passes_test(es_administrador)
