@@ -149,28 +149,29 @@ def usuario_basico_dashboard(request):
 @no_cache
 def gestionar_usuarios(request):
     query = request.GET.get('q', '')  # Obtén el término de búsqueda desde la URL
-    usuarios = User.objects.filter(
-        Q(username__icontains=query)
-    )  # Filtra usuarios por nombre de usuario o correo electrónico
+    usuarios = User.objects.filter(Q(username__icontains=query))
     grupos = Group.objects.all()
 
     if request.method == 'POST':
-        usuario_id = request.POST.get('usuario_id')
-        grupo_id = request.POST.get('grupo_id')
+        # Verifica si se actualiza un grupo
+        if 'usuario_id' in request.POST and 'grupo_id' in request.POST:
+            usuario_id = request.POST.get('usuario_id')
+            grupo_id = request.POST.get('grupo_id')
 
-        usuario = get_object_or_404(User, id=usuario_id)
-        grupo = get_object_or_404(Group, id=grupo_id)
+            usuario = get_object_or_404(User, id=usuario_id)
+            grupo = get_object_or_404(Group, id=grupo_id)
 
-        usuario.groups.clear()
-        usuario.groups.add(grupo)
+            usuario.groups.clear()
+            usuario.groups.add(grupo)
 
-        messages.success(request, f'Grupo actualizado para {usuario.username}')
-        return redirect('gestionar_usuarios')
+            # Agrega el mensaje y redirige
+            messages.success(request, f'Grupo actualizado para {usuario.username}')
+            return redirect('gestionar_usuarios')
 
     return render(request, 'gestionar_usuarios.html', {
         'usuarios': usuarios,
         'grupos': grupos,
-        'query': query,  # Incluye el término de búsqueda en el contexto
+        'query': query,
     })
 
 @login_required
@@ -481,3 +482,17 @@ def ver_ordenes_asignadas(request):
     }
 
     return render(request, 'ver_ordenes_asignadas.html', context)
+
+@login_required
+def dar_baja_usuario(request, usuario_id):
+    usuario = get_object_or_404(User, id=usuario_id)
+    
+    # Verificar que no intentes eliminarte a ti mismo
+    if request.user == usuario:
+        messages.error(request, "No puedes eliminarte a ti mismo.")
+        return redirect('gestionar_usuarios')
+
+    if request.method == 'POST':
+        usuario.delete()  # Eliminar permanentemente al usuario
+        messages.success(request, f'Usuario {usuario.username} eliminado exitosamente.')
+        return redirect('gestionar_usuarios')

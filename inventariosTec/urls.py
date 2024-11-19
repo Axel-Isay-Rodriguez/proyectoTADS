@@ -35,5 +35,5 @@ urlpatterns = [
     path('ver_prestamo/<int:prestamo_id>/', views.ver_prestamo, name='ver_prestamo'),
     path('editar_orden_trabajo/<int:orden_id>/', views.editar_orden_trabajo, name='editar_orden_trabajo'),
     path('ordenes_asignadas/', views.ver_ordenes_asignadas, name='ver_ordenes_asignadas'),
-
+    path('dar_baja_usuario/<int:usuario_id>/', views.dar_baja_usuario, name='dar_baja_usuario'),
 ]

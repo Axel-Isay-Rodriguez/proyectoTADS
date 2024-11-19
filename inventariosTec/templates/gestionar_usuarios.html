@@ -13,14 +13,17 @@
 
     <!-- Mensajes de Django -->
     {% if messages %}
-        <div class="alert alert-info">
-            <ul class="mb-0">
-                {% for message in messages %}
-                    <li>{{ message }}</li>
-                {% endfor %}
-            </ul>
-        </div>
-    {% endif %}
+    <div class="alert alert-info">
+        <ul class="mb-0">
+            {% for message in messages %}
+                <li>{{ message }}</li>
+            {% endfor %}
+        </ul>
+    </div>
+    <!-- Esto asegura que no se procesen más de una vez -->
+    {% with messages.clear as _ %}
+    {% endwith %}
+{% endif %}
 
     <!-- Tabla de usuarios -->
     <div class="table-responsive">
@@ -31,6 +34,7 @@
                     <th><a href="?sort=email" class="text-white text-decoration-none">Email</a></th>
                     <th class="text-white">Grupo Actual</th>
                     <th class="text-white">Asignar Nuevo Grupo</th>
+                    <th class="text-white">Eliminar Usuario</th>
                 </tr>
             </thead>
             <tbody>
@@ -62,6 +66,14 @@
                             </button>
                         </form>
                     </td>
+                    <td>
+                        <form method="post" action="{% url 'dar_baja_usuario' usuario.id %}" onsubmit="return confirm('¿Estás seguro de que deseas dar de baja a {{ usuario.username }}?')">
+                            {% csrf_token %}
+                            <button type="submit" class="btn btn-danger btn-sm">
+                                <i class="bi bi-person-dash"></i> Dar de Baja
+                            </button>
+                        </form>
+                    </td>                              
                 </tr>
                 {% endfor %}
             </tbody>
