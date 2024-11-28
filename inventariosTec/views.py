@@ -3,29 +3,18 @@ from django.contrib.auth.models import User, Group
 from django.contrib.auth import login, authenticate
 from django.contrib import messages
 from django import forms
-from django.contrib.auth.decorators import login_required, user_passes_test
+from django.contrib.auth.decorators import login_required
 from django.db.models import Q
 from django.utils.decorators import decorator_from_middleware
 from django.utils.cache import add_never_cache_headers
 from django.middleware.cache import MiddlewareMixin
 from .factories import FormFactory  # Importa FormFactory
 from inventariosTec.models import PrestamoDetalle
-from .models import Prestamo
-from django.shortcuts import render, redirect
-from django.contrib.auth.decorators import login_required
-from .forms import PrestamoForm, OrdenTrabajoForm
-from .models import Prestamo, OrdenTrabajo
-from django.shortcuts import render, redirect
-from django.forms import formset_factory
-from django.contrib.auth.decorators import login_required
-from .forms import PrestamoForm, PrestamoDetalleForm, OrdenTrabajoForm
-from .models import Prestamo, PrestamoDetalle, Producto
+from .models import Prestamo, OrdenTrabajo, Producto
+from .forms import PrestamoForm, OrdenTrabajoForm, PrestamoDetalleForm
+from django.forms import formset_factory, modelformset_factory
 from django.db import transaction
-from django.shortcuts import render, get_object_or_404, redirect
-from django.contrib.auth.decorators import login_required
-from .models import Prestamo, OrdenTrabajo
-from .forms import PrestamoForm, OrdenTrabajoForm
-from django.forms import modelformset_factory
+from .decorators import registrar_acceso, verificar_rol  # Importa los decoradores personalizados
 
 
 class NoCacheMiddleware(MiddlewareMixin):
@@ -33,7 +22,9 @@ class NoCacheMiddleware(MiddlewareMixin):
         add_never_cache_headers(response)
         return response
 
+
 no_cache = decorator_from_middleware(NoCacheMiddleware)
+
 
 def grupos_usuario(request):
     if request.user.is_authenticated:
@@ -42,7 +33,7 @@ def grupos_usuario(request):
         grupos = []
     return {'user_groups': grupos}
 
-# Formulario de registro
+
 class RegistroForm(forms.ModelForm):
     password = forms.CharField(widget=forms.PasswordInput)
     password_confirm = forms.CharField(widget=forms.PasswordInput, label="Confirmar Contraseña")
@@ -59,6 +50,8 @@ class RegistroForm(forms.ModelForm):
             self.add_error("password_confirm", "Las contraseñas no coinciden.")
         return cleaned_data
 
+
+@registrar_acceso
 def registro_view(request):
     if request.method == 'POST':
         username = request.POST['username']
@@ -67,17 +60,14 @@ def registro_view(request):
         password = request.POST['password']
         password_confirm = request.POST['password_confirm']
 
-        # Verificar que las contraseñas coinciden
         if password != password_confirm:
             messages.error(request, 'Las contraseñas no coinciden.')
             return render(request, 'register.html')
 
-        # Crear un nuevo usuario
         if not User.objects.filter(username=username).exists():
             user = User.objects.create_user(username=username, email=email, password=password)
             user.first_name = first_name
             user.save()
-
             messages.success(request, 'Tu cuenta ha sido creada exitosamente. Ahora puedes iniciar sesión.')
             return redirect('login')
         else:
@@ -85,9 +75,13 @@ def registro_view(request):
 
     return render(request, 'register.html')
 
+
+@registrar_acceso
 def home(request):
     return render(request, 'home.html')
 
+
+@registrar_acceso
 def login_view(request):
     if request.method == 'POST':
         username = request.POST['username']
@@ -109,51 +103,46 @@ def login_view(request):
             messages.error(request, "Nombre de usuario o contraseña incorrectos.")
     return render(request, 'login.html')
 
+
+@registrar_acceso
 def home_view(request):
     user_groups = request.user.groups.values_list('name', flat=True) if request.user.is_authenticated else []
     context = {'user_groups': user_groups}
     return render(request, 'home.html', context)
 
-def es_administrador(user):
-    return user.groups.filter(name='Administrador').exists()
 
-def es_operador(user):
-    return user.groups.filter(name='Operador').exists()
-
-def es_usuario_avanzado(user):
-    return user.groups.filter(name='Usuario Avanzado').exists()
-
-def es_usuario_basico(user):
-    return user.groups.filter(name='Usuario Básico').exists()
-
-@user_passes_test(es_administrador)
+@registrar_acceso
+@verificar_rol("Administrador")
 def admin_dashboard(request):
     return render(request, 'admin_dashboard.html')
 
-@user_passes_test(es_operador)
+
+@registrar_acceso
+@verificar_rol("Operador")
 def operador_dashboard(request):
     return render(request, 'operador_dashboard.html')
-
-@login_required
-@user_passes_test(es_usuario_avanzado)
+@registrar_acceso
+@verificar_rol("Usuario Avanzado")
 def usuario_avanzado_dashboard(request):
     return render(request, 'usuario_avanzado_dashboard.html')
 
-@login_required
-@user_passes_test(es_usuario_basico)
+
+@registrar_acceso
+@verificar_rol("Usuario Básico")
 def usuario_basico_dashboard(request):
     return render(request, 'usuario_basico_dashboard.html')
 
+
 @login_required
-@user_passes_test(es_administrador)
+@registrar_acceso
+@verificar_rol("Administrador")
 @no_cache
 def gestionar_usuarios(request):
-    query = request.GET.get('q', '')  # Obtén el término de búsqueda desde la URL
+    query = request.GET.get('q', '')
     usuarios = User.objects.filter(Q(username__icontains=query))
     grupos = Group.objects.all()
 
     if request.method == 'POST':
-        # Verifica si se actualiza un grupo
         if 'usuario_id' in request.POST and 'grupo_id' in request.POST:
             usuario_id = request.POST.get('usuario_id')
             grupo_id = request.POST.get('grupo_id')
@@ -164,7 +153,6 @@ def gestionar_usuarios(request):
             usuario.groups.clear()
             usuario.groups.add(grupo)
 
-            # Agrega el mensaje y redirige
             messages.success(request, f'Grupo actualizado para {usuario.username}')
             return redirect('gestionar_usuarios')
 
@@ -174,13 +162,14 @@ def gestionar_usuarios(request):
         'query': query,
     })
 
+
 @login_required
-@user_passes_test(es_administrador)
+@registrar_acceso
+@verificar_rol("Administrador")
 @no_cache
 def gestionar_producto(request, producto_id=None):
     producto = get_object_or_404(Producto, id=producto_id) if producto_id else None
 
-    # Crear formularios usando el FormFactory
     producto_form = FormFactory.create_form('producto', instance=producto)
     partida_form = FormFactory.create_form('partida')
     categoria_form = FormFactory.create_form('categoria')
@@ -220,44 +209,42 @@ def gestionar_producto(request, producto_id=None):
     }
 
     return render(request, 'gestionar_producto.html', context)
-
+@registrar_acceso
+@login_required
 def lista_productos(request):
     productos = Producto.objects.all()
     return render(request, 'lista_productos.html', {'productos': productos})
 
-# Vista para acceso denegado
+
+@registrar_acceso
 def no_autorizado(request):
     return render(request, 'no_autorizado.html')
 
+
+@registrar_acceso
 @login_required
 def mis_prestamos(request):
-    # Filtrar los préstamos que pertenecen al usuario actual
     prestamos = Prestamo.objects.filter(usuario=request.user)
-
     context = {
         'prestamos': prestamos,
     }
-
     return render(request, 'mis_prestamos.html', context)
 
+
+@registrar_acceso
 @login_required
 def lista_prestamos(request):
-    # Filtrar los préstamos que pertenecen al usuario actual
     prestamos = Prestamo.objects.filter(usuario=request.user)
-
     context = {
         'prestamos': prestamos,
     }
-
     return render(request, 'lista_prestamos.html', context)
 
 
-
+@registrar_acceso
 @login_required
 def crear_prestamo(request):
     PrestamoDetalleFormSet = formset_factory(PrestamoDetalleForm, extra=1)
-
-    # Obtener las órdenes de trabajo no asignadas a ningún préstamo
     ordenes_trabajo = OrdenTrabajo.objects.filter(prestamo__isnull=True)
 
     if request.method == 'POST':
@@ -271,7 +258,6 @@ def crear_prestamo(request):
             detalles_validos = True
             cantidades_temporales = {}
 
-            # Verificar existencias sin modificar la cantidad disponible
             for detalle_form in detalle_formset:
                 producto = detalle_form.cleaned_data.get('producto')
                 cantidad = detalle_form.cleaned_data.get('cantidad')
@@ -280,25 +266,22 @@ def crear_prestamo(request):
                     if producto.id not in cantidades_temporales:
                         cantidades_temporales[producto.id] = producto.cantidad_disponible
 
-                    # Verificar si hay suficiente inventario disponible
                     if cantidades_temporales[producto.id] < cantidad:
                         detalle_form.add_error('cantidad', 'No hay suficientes unidades disponibles.')
                         detalles_validos = False
                     else:
-                        # Reducir la cantidad temporalmente para la verificación posterior
                         cantidades_temporales[producto.id] -= cantidad
 
-            # Solo si todos los detalles son válidos guardamos el préstamo y sus detalles
             if detalles_validos:
                 with transaction.atomic():
                     prestamo.save()
 
-                    # Asignar orden de trabajo existente si se ha seleccionado
                     if orden_trabajo_existente_id:
                         orden_trabajo = OrdenTrabajo.objects.get(id=orden_trabajo_existente_id)
                         prestamo.orden_trabajo = orden_trabajo
-                    # Crear orden de trabajo si se ha ingresado información válida y no se seleccionó una existente
-                    elif orden_form.is_valid() and (orden_form.cleaned_data.get('lugar') or orden_form.cleaned_data.get('tipo_trabajo')):
+                    elif orden_form.is_valid() and (
+                        orden_form.cleaned_data.get('lugar') or orden_form.cleaned_data.get('tipo_trabajo')
+                    ):
                         orden_trabajo = orden_form.save()
                         prestamo.orden_trabajo = orden_trabajo
 
@@ -309,13 +292,11 @@ def crear_prestamo(request):
                         cantidad = detalle_form.cleaned_data.get('cantidad')
 
                         if producto and cantidad:
-                            # Crear el detalle del préstamo
                             PrestamoDetalle.objects.create(
                                 prestamo=prestamo,
                                 producto=producto,
-                                cantidad=cantidad
+                                cantidad=cantidad,
                             )
-                            # Actualizar la cantidad disponible del producto
                             producto.cantidad_disponible = cantidades_temporales[producto.id]
                             producto.save()
 
@@ -335,6 +316,8 @@ def crear_prestamo(request):
 
     return render(request, 'crear_prestamo.html', context)
 
+
+@registrar_acceso
 @login_required
 def listar_prestamos_ordenes(request):
     prestamos = Prestamo.objects.all()
@@ -347,6 +330,8 @@ def listar_prestamos_ordenes(request):
 
     return render(request, 'lista_prestamos_ordenes.html', context)
 
+
+@registrar_acceso
 @login_required
 def editar_prestamo(request, prestamo_id):
     prestamo = get_object_or_404(Prestamo, id=prestamo_id)
@@ -359,6 +344,8 @@ def editar_prestamo(request, prestamo_id):
         form = PrestamoForm(instance=prestamo)
     return render(request, 'editar_prestamo.html', {'form': form})
 
+
+@registrar_acceso
 @login_required
 def editar_orden_trabajo(request, orden_id):
     orden_trabajo = get_object_or_404(OrdenTrabajo, id=orden_id)
@@ -377,12 +364,15 @@ def editar_orden_trabajo(request, orden_id):
     }
 
     return render(request, 'editar_orden_trabajo.html', context)
+
+
+@registrar_acceso
 @login_required
+@verificar_rol("Administrador")
 def editar_prestamo_completo(request, prestamo_id):
     prestamo = get_object_or_404(Prestamo, id=prestamo_id)
     PrestamoDetalleFormSet = modelformset_factory(PrestamoDetalle, form=PrestamoDetalleForm, extra=0, can_delete=True)
 
-    # Crear un formulario para la orden de trabajo si ya existe
     orden_trabajo_form = None
     if prestamo.orden_trabajo:
         orden_trabajo_form = OrdenTrabajoForm(instance=prestamo.orden_trabajo)
@@ -391,30 +381,25 @@ def editar_prestamo_completo(request, prestamo_id):
         prestamo_form = PrestamoForm(request.POST, instance=prestamo)
         detalle_formset = PrestamoDetalleFormSet(request.POST, queryset=PrestamoDetalle.objects.filter(prestamo=prestamo))
 
-        # Si existe una orden de trabajo asociada, también obtener el formulario actualizado
         if prestamo.orden_trabajo:
             orden_trabajo_form = OrdenTrabajoForm(request.POST, instance=prestamo.orden_trabajo)
 
         if prestamo_form.is_valid() and detalle_formset.is_valid() and (not orden_trabajo_form or orden_trabajo_form.is_valid()):
             prestamo_form.save()
 
-            # Guardar la orden de trabajo si existe
             if orden_trabajo_form:
                 orden_trabajo_form.save()
 
             detalles = detalle_formset.save(commit=False)
 
-            # Recorre cada detalle del préstamo
             for detalle in detalles:
                 producto = detalle.producto
 
-                # Reversa la cantidad antes de actualizarla para recalcular correctamente
                 if detalle.pk:
                     detalle_antiguo = PrestamoDetalle.objects.get(pk=detalle.pk)
                     producto.cantidad_disponible += detalle_antiguo.cantidad
                     producto.save()
 
-                # Si se mantiene prestado o regresado/consumido, ajustar la cantidad
                 if detalle.estado == 'prestado':
                     producto.cantidad_disponible -= detalle.cantidad
                 elif detalle.estado in ['regresado', 'consumido']:
@@ -423,7 +408,6 @@ def editar_prestamo_completo(request, prestamo_id):
                 producto.save()
                 detalle.save()
 
-            # Eliminar los detalles marcados como eliminados en el formset
             for deleted_detalle in detalle_formset.deleted_objects:
                 deleted_detalle.producto.cantidad_disponible += deleted_detalle.cantidad
                 deleted_detalle.producto.save()
@@ -433,7 +417,7 @@ def editar_prestamo_completo(request, prestamo_id):
     else:
         prestamo_form = PrestamoForm(instance=prestamo)
         detalle_formset = PrestamoDetalleFormSet(queryset=PrestamoDetalle.objects.filter(prestamo=prestamo))
-    
+
     context = {
         'prestamo_form': prestamo_form,
         'detalle_formset': detalle_formset,
@@ -441,13 +425,12 @@ def editar_prestamo_completo(request, prestamo_id):
     }
 
     return render(request, 'editar_prestamo_completo.html', context)
-
+@registrar_acceso
+@login_required
 def historial_prestamos(request):
-    # Si el usuario es administrador, mostrar todos los préstamos
     if request.user.groups.filter(name='Administrador').exists():
         prestamos = Prestamo.objects.all()
     else:
-        # Para otros usuarios, mostrar solo sus préstamos
         prestamos = Prestamo.objects.filter(usuario=request.user)
     
     context = {
@@ -455,26 +438,28 @@ def historial_prestamos(request):
     }
     
     return render(request, 'historial_prestamos.html', context)
+
+
+@registrar_acceso
 @login_required
 def ver_prestamo(request, prestamo_id):
-    # Obtiene el préstamo específico o retorna un 404 si no existe
     prestamo = get_object_or_404(Prestamo, id=prestamo_id)
 
-    # Si el usuario no es administrador y no es el dueño del préstamo, redirigir a no autorizado
     if not request.user.groups.filter(name='Administrador').exists() and prestamo.usuario != request.user:
         return render(request, 'no_autorizado.html')
     
     context = {
         'prestamo': prestamo,
-        'detalles_prestamo': prestamo.detalles.all(),  # Obtiene todos los detalles del préstamo
-        'orden_trabajo': prestamo.orden_trabajo if hasattr(prestamo, 'orden_trabajo') else None,  # Si hay una orden de trabajo asociada
+        'detalles_prestamo': prestamo.detalles.all(),
+        'orden_trabajo': prestamo.orden_trabajo if hasattr(prestamo, 'orden_trabajo') else None,
     }
     
     return render(request, 'ver_prestamo.html', context)
 
+
+@registrar_acceso
 @login_required
 def ver_ordenes_asignadas(request):
-    # Obtiene las órdenes de trabajo asignadas al usuario actual
     ordenes_asignadas = OrdenTrabajo.objects.filter(asignado_a=request.user)
 
     context = {
@@ -483,16 +468,18 @@ def ver_ordenes_asignadas(request):
 
     return render(request, 'ver_ordenes_asignadas.html', context)
 
+
+@registrar_acceso
 @login_required
+@verificar_rol("Administrador")
 def dar_baja_usuario(request, usuario_id):
     usuario = get_object_or_404(User, id=usuario_id)
     
-    # Verificar que no intentes eliminarte a ti mismo
     if request.user == usuario:
         messages.error(request, "No puedes eliminarte a ti mismo.")
         return redirect('gestionar_usuarios')
 
     if request.method == 'POST':
-        usuario.delete()  # Eliminar permanentemente al usuario
+        usuario.delete()
         messages.success(request, f'Usuario {usuario.username} eliminado exitosamente.')
         return redirect('gestionar_usuarios')
